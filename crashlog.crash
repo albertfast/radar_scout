@@ -1,0 +1,228 @@
+Incident Identifier: 57F87978-1A6B-4C8F-BBE2-E925015117DC
+Distributor ID:      com.apple.TestFlight
+Hardware Model:      iPhone18,1
+Process:             RadarScout [21393]
+Path:                /private/var/containers/Bundle/Application/27DCBF5A-9B86-49B0-90CC-C069A0733E60/RadarScout.app/RadarScout
+Identifier:          com.radarscout.app
+Version:             1.0.5 (1779456390385)
+AppStoreTools:       17F41
+AppVariant:          1:iPhone18,1:26
+Beta:                YES
+Code Type:           ARM-64 (Native)
+Role:                Foreground
+Parent Process:      launchd [1]
+Coalition:           com.radarscout.app [4801]
+
+Date/Time:           2026-05-22 14:28:22.8558 -0700
+Launch Time:         2026-05-22 14:28:17.4640 -0700
+OS Version:          iPhone OS 26.5 (23F77)
+Release Type:        User
+Baseband Version:    1.60.02
+Report Version:      104
+
+Exception Type:  EXC_CRASH (SIGABRT)
+Exception Codes: 0x0000000000000000, 0x0000000000000000
+Termination Reason: SIGNAL 6 Abort trap: 6
+Terminating Process: RadarScout [21393]
+
+Triggered by Thread:  1
+
+Last Exception Backtrace:
+0   CoreFoundation                	0x19a15e23c 0x19a049000 + 1135164
+1   libobjc.A.dylib               	0x196c2d224 0x196bfc000 + 201252
+2   CoreFoundation                	0x19a15e198 0x19a049000 + 1135000
+3   RadarScout                    	0x100a6a5a4 ErrorRecovery.crash() + 2532 (ErrorRecovery.swift:277)
+4   RadarScout                    	0x100a69334 ErrorRecovery.runNextTask() + 560 (ErrorRecovery.swift:190)
+5   RadarScout                    	0x100a6aa2c closure #1 in closure #1 in ErrorRecovery.tryRelaunchFromCache() + 376 (ErrorRecovery.swift:233)
+6   RadarScout                    	0x100a1e478 <deduplicated_symbol> + 28
+7   libdispatch.dylib             	0x1d446b9a8 0x1d446a000 + 6568
+8   libdispatch.dylib             	0x1d44851e4 0x1d446a000 + 111076
+9   libdispatch.dylib             	0x1d4473fb0 0x1d446a000 + 40880
+10  libdispatch.dylib             	0x1d4474aac 0x1d446a000 + 43692
+11  libdispatch.dylib             	0x1d447edac 0x1d446a000 + 85420
+12  libdispatch.dylib             	0x1d447e6ac 0x1d446a000 + 83628
+13  libsystem_pthread.dylib       	0x1f923d3b0 0x1f923c000 + 5040
+14  libsystem_pthread.dylib       	0x1f923c8c0 0x1f923c000 + 2240
+
+Thread 0 name:
+Thread 0:
+0   libsystem_kernel.dylib        	0x00000002491bfcd4 0x2491bf000 + 3284
+1   libsystem_kernel.dylib        	0x00000002491c330c 0x2491bf000 + 17164
+2   libsystem_kernel.dylib        	0x00000002491c322c 0x2491bf000 + 16940
+3   libsystem_kernel.dylib        	0x00000002491c3078 0x2491bf000 + 16504
+4   CoreFoundation                	0x000000019a0ae344 0x19a049000 + 414532
+5   CoreFoundation                	0x000000019a078310 0x19a049000 + 193296
+6   CoreFoundation                	0x000000019a07754c 0x19a049000 + 189772
+7   GraphicsServices              	0x000000023f7e3498 0x23f7e2000 + 5272
+8   UIKitCore                     	0x000000019fd70244 0x19fc4f000 + 1184324
+9   UIKitCore                     	0x000000019fcdb158 0x19fc4f000 + 573784
+10  RadarScout                    	0x00000001009c5654 main + 64 (AppDelegate.swift:12)
+11  dyld                          	0x0000000196c85c1c 0x196c81000 + 19484
+
+Thread 1 name:
+Thread 1 Crashed:
+0   libsystem_kernel.dylib        	0x00000002491ca1d0 0x2491bf000 + 45520
+1   libsystem_pthread.dylib       	0x00000001f92437dc 0x1f923c000 + 30684
+2   libsystem_c.dylib             	0x00000001a5bfdd3c 0x1a5b87000 + 486716
+3   libsystem_c.dylib             	0x00000001a5bfdca4 0x1a5b87000 + 486564
+4   libc++abi.dylib               	0x0000000196d2efd4 0x196d27000 + 32724
+5   libc++abi.dylib               	0x0000000196d30b90 0x196d27000 + 39824
+6   libobjc.A.dylib               	0x0000000196c2f868 0x196bfc000 + 211048
+7   RadarScout                    	0x0000000100e27800 FIRCLSTerminateHandler() + 332 (FIRCLSException.mm:466)
+8   libc++abi.dylib               	0x0000000196d3b1f8 0x196d27000 + 82424
+9   libc++abi.dylib               	0x0000000196d3ce18 0x196d27000 + 89624
+10  libc++abi.dylib               	0x0000000196d29360 0x196d27000 + 9056
+11  libobjc.A.dylib               	0x0000000196c2d38c 0x196bfc000 + 201612
+12  CoreFoundation                	0x000000019a15e198 0x19a049000 + 1135000
+13  RadarScout                    	0x0000000100a6a5a4 ErrorRecovery.crash() + 2532 (ErrorRecovery.swift:277)
+14  RadarScout                    	0x0000000100a69334 ErrorRecovery.runNextTask() + 560 (ErrorRecovery.swift:190)
+15  RadarScout                    	0x0000000100a6aa2c closure #1 in closure #1 in ErrorRecovery.tryRelaunchFromCache() + 376 (ErrorRecovery.swift:233)
+16  RadarScout                    	0x0000000100a1e478 <deduplicated_symbol> + 28
+17  libdispatch.dylib             	0x00000001d446b9a8 0x1d446a000 + 6568
+18  libdispatch.dylib             	0x00000001d44851e4 0x1d446a000 + 111076
+19  libdispatch.dylib             	0x00000001d4473fb0 0x1d446a000 + 40880
+20  libdispatch.dylib             	0x00000001d4474aac 0x1d446a000 + 43692
+21  libdispatch.dylib             	0x00000001d447edac 0x1d446a000 + 85420
+22  libdispatch.dylib             	0x00000001d447e6ac 0x1d446a000 + 83628
+23  libsystem_pthread.dylib       	0x00000001f923d3b0 0x1f923c000 + 5040
+24  libsystem_pthread.dylib       	0x00000001f923c8c0 0x1f923c000 + 2240
+
+Thread 2:
+
+Thread 3:
+
+Thread 4:
+
+Thread 5:
+
+Thread 6 name:
+Thread 6:
+0   libsystem_kernel.dylib        	0x00000002491bfcd4 0x2491bf000 + 3284
+1   libsystem_kernel.dylib        	0x00000002491c330c 0x2491bf000 + 17164
+2   libsystem_kernel.dylib        	0x00000002491c322c 0x2491bf000 + 16940
+3   libsystem_kernel.dylib        	0x00000002491c3078 0x2491bf000 + 16504
+4   CoreFoundation                	0x000000019a0ae344 0x19a049000 + 414532
+5   CoreFoundation                	0x000000019a078310 0x19a049000 + 193296
+6   CoreFoundation                	0x000000019a07754c 0x19a049000 + 189772
+7   Foundation                    	0x00000001972e5cf0 0x1972db000 + 44272
+8   Foundation                    	0x00000001972e5bd8 0x1972db000 + 43992
+9   UIKitCore                     	0x000000019fd35a7c 0x19fc4f000 + 944764
+10  Foundation                    	0x0000000197369824 0x1972db000 + 583716
+11  libsystem_pthread.dylib       	0x00000001f9240438 0x1f923c000 + 17464
+12  libsystem_pthread.dylib       	0x00000001f923c8cc 0x1f923c000 + 2252
+
+Thread 7:
+
+Thread 8:
+
+Thread 9:
+
+Thread 10 name:
+Thread 10:
+0   libsystem_kernel.dylib        	0x00000002491bfcd4 0x2491bf000 + 3284
+1   libsystem_kernel.dylib        	0x00000002491c330c 0x2491bf000 + 17164
+2   libsystem_kernel.dylib        	0x00000002491c322c 0x2491bf000 + 16940
+3   libsystem_kernel.dylib        	0x00000002491c3078 0x2491bf000 + 16504
+4   RadarScout                    	0x0000000100e306fc FIRCLSMachExceptionServer + 104 (FIRCLSMachException.c:172)
+5   libsystem_pthread.dylib       	0x00000001f9240438 0x1f923c000 + 17464
+6   libsystem_pthread.dylib       	0x00000001f923c8cc 0x1f923c000 + 2252
+
+Thread 11 name:
+Thread 11:
+0   libsystem_kernel.dylib        	0x00000002491bfc68 0x2491bf000 + 3176
+1   libdispatch.dylib             	0x00000001d44a07d8 0x1d446a000 + 223192
+2   libdispatch.dylib             	0x00000001d446da68 0x1d446a000 + 14952
+3   libdispatch.dylib             	0x00000001d447d6fc 0x1d446a000 + 79612
+4   libsystem_pthread.dylib       	0x00000001f9240438 0x1f923c000 + 17464
+5   libsystem_pthread.dylib       	0x00000001f923c8cc 0x1f923c000 + 2252
+
+Thread 12 name:
+Thread 12:
+0   libsystem_kernel.dylib        	0x00000002491bfcd4 0x2491bf000 + 3284
+1   libsystem_kernel.dylib        	0x00000002491c330c 0x2491bf000 + 17164
+2   libsystem_kernel.dylib        	0x00000002491c322c 0x2491bf000 + 16940
+3   libsystem_kernel.dylib        	0x00000002491c3078 0x2491bf000 + 16504
+4   CoreFoundation                	0x000000019a0ae344 0x19a049000 + 414532
+5   CoreFoundation                	0x000000019a078310 0x19a049000 + 193296
+6   CoreFoundation                	0x000000019a07754c 0x19a049000 + 189772
+7   CFNetwork                     	0x00000001af52ab54 0x1af499000 + 596820
+8   Foundation                    	0x0000000197369824 0x1972db000 + 583716
+9   libsystem_pthread.dylib       	0x00000001f9240438 0x1f923c000 + 17464
+10  libsystem_pthread.dylib       	0x00000001f923c8cc 0x1f923c000 + 2252
+
+Thread 13 name:
+Thread 13:
+0   libsystem_kernel.dylib        	0x00000002491bfcd4 0x2491bf000 + 3284
+1   libsystem_kernel.dylib        	0x00000002491c330c 0x2491bf000 + 17164
+2   libsystem_kernel.dylib        	0x00000002491c322c 0x2491bf000 + 16940
+3   libsystem_kernel.dylib        	0x00000002491c3078 0x2491bf000 + 16504
+4   CoreFoundation                	0x000000019a0ae344 0x19a049000 + 414532
+5   CoreFoundation                	0x000000019a078310 0x19a049000 + 193296
+6   CoreFoundation                	0x000000019a07754c 0x19a049000 + 189772
+7   RadarScout                    	0x0000000101b04928 +[RCTJSThreadManager runRunLoop] + 212 (RCTJSThreadManager.mm:102)
+8   Foundation                    	0x0000000197369824 0x1972db000 + 583716
+9   libsystem_pthread.dylib       	0x00000001f9240438 0x1f923c000 + 17464
+10  libsystem_pthread.dylib       	0x00000001f923c8cc 0x1f923c000 + 2252
+
+Thread 14 name:
+Thread 14:
+0   libsystem_kernel.dylib        	0x00000002491c55e8 0x2491bf000 + 26088
+1   libsystem_pthread.dylib       	0x00000001f923eb48 0x1f923c000 + 11080
+2   libc++.1.dylib                	0x00000001a9781bcc 0x1a9775000 + 52172
+3   hermes                        	0x00000001051279c4 void std::__1::condition_variable::wait<hermes::vm::HadesGC::Executor::worker()::'lambda'()>(std::__1::unique_lock<std::__1::mutex>&, hermes::vm::HadesGC::Executor::worker()::'lambda'()) + 28 (condition_variable.h:146)
+4   hermes                        	0x00000001051279c4 hermes::vm::HadesGC::Executor::worker() + 116 (HadesGC.cpp:1062)
+5   hermes                        	0x000000010512792c hermes::vm::HadesGC::Executor::Executor()::'lambda'()::operator()() const + 4 (HadesGC.cpp:1033)
+6   hermes                        	0x000000010512792c decltype(std::declval<hermes::vm::HadesGC::Executor::Executor()::'lambda'()>()()) std::__1::__invoke[abi:nn180100]<hermes::vm::HadesGC::Executor::Executor()::'lambda'()>(hermes::vm::HadesGC::Execut... + 4 (invoke.h:344)
+7   hermes                        	0x000000010512792c void std::__1::__thread_execute[abi:nn180100]<std::__1::unique_ptr<std::__1::__thread_struct, std::__1::default_delete<std::__1::__thread_struct>>, hermes::vm::HadesGC::Executor::Executor()::'lambd... + 4 (thread.h:199)
+8   hermes                        	0x000000010512792c void* std::__1::__thread_proxy[abi:nn180100]<std::__1::tuple<std::__1::unique_ptr<std::__1::__thread_struct, std::__1::default_delete<std::__1::__thread_struct>>, hermes::vm::HadesGC::Executor::Exe... + 44 (thread.h:208)
+9   libsystem_pthread.dylib       	0x00000001f9240438 0x1f923c000 + 17464
+10  libsystem_pthread.dylib       	0x00000001f923c8cc 0x1f923c000 + 2252
+
+Thread 15 name:
+Thread 15:
+0   libsystem_kernel.dylib        	0x00000002491c55e8 0x2491bf000 + 26088
+1   libsystem_pthread.dylib       	0x00000001f923eb48 0x1f923c000 + 11080
+2   libc++.1.dylib                	0x00000001a9781bcc 0x1a9775000 + 52172
+3   hermes                        	0x00000001051279c4 void std::__1::condition_variable::wait<hermes::vm::HadesGC::Executor::worker()::'lambda'()>(std::__1::unique_lock<std::__1::mutex>&, hermes::vm::HadesGC::Executor::worker()::'lambda'()) + 28 (condition_variable.h:146)
+4   hermes                        	0x00000001051279c4 hermes::vm::HadesGC::Executor::worker() + 116 (HadesGC.cpp:1062)
+5   hermes                        	0x000000010512792c hermes::vm::HadesGC::Executor::Executor()::'lambda'()::operator()() const + 4 (HadesGC.cpp:1033)
+6   hermes                        	0x000000010512792c decltype(std::declval<hermes::vm::HadesGC::Executor::Executor()::'lambda'()>()()) std::__1::__invoke[abi:nn180100]<hermes::vm::HadesGC::Executor::Executor()::'lambda'()>(hermes::vm::HadesGC::Execut... + 4 (invoke.h:344)
+7   hermes                        	0x000000010512792c void std::__1::__thread_execute[abi:nn180100]<std::__1::unique_ptr<std::__1::__thread_struct, std::__1::default_delete<std::__1::__thread_struct>>, hermes::vm::HadesGC::Executor::Executor()::'lambd... + 4 (thread.h:199)
+8   hermes                        	0x000000010512792c void* std::__1::__thread_proxy[abi:nn180100]<std::__1::tuple<std::__1::unique_ptr<std::__1::__thread_struct, std::__1::default_delete<std::__1::__thread_struct>>, hermes::vm::HadesGC::Executor::Exe... + 44 (thread.h:208)
+9   libsystem_pthread.dylib       	0x00000001f9240438 0x1f923c000 + 17464
+10  libsystem_pthread.dylib       	0x00000001f923c8cc 0x1f923c000 + 2252
+
+
+Thread 1 crashed with ARM Thread State (64-bit):
+    x0: 0x0000000000000000   x1: 0x0000000000000000   x2: 0x0000000000000000   x3: 0x0000000000000000
+    x4: 0x0000000000000000   x5: 0x0000000000989680   x6: 0x000000000000006e   x7: 0xfffff0003ffff800
+    x8: 0xfa665cc5808590d1   x9: 0xfa665cc4efc9e0d1  x10: 0x00000000000003e8  x11: 0x00000000fffffffd
+   x12: 0x0000000000000000  x13: 0x0000000000000000  x14: 0x0000000000000000  x15: 0x0000000000000000
+   x16: 0x0000000000000148  x17: 0x000000016f4c7000  x18: 0x0000000000000000  x19: 0x0000000000000006
+   x20: 0x0000000000000c03  x21: 0x000000016f4c70e0  x22: 0x0000000000000007  x23: 0x0000000103925604
+   x24: 0x0000000000000000  x25: 0x0000000000000038  x26: 0xd000000000000018  x27: 0xc00000000000056f
+   x28: 0x00000002049a2e60   fp: 0x000000016f4c53e0   lr: 0x00000001f92437dc
+    sp: 0x000000016f4c53c0   pc: 0x00000002491ca1d0 cpsr: 0x40000000
+   esr: 0x56000080 (Syscall)
+
+
+Binary Images:
+        0x1009c0000 -         0x103d83fff RadarScout arm64  <b85f2ee4a220334fa0c0f212328bb448> /private/var/containers/Bundle/Application/27DCBF5A-9B86-49B0-90CC-C069A0733E60/RadarScout.app/RadarScout
+        0x10499c000 -         0x1049a7fff libobjc-trampolines.dylib arm64e  <3702c305c51e37d59a2255cef15e974a> /private/preboot/Cryptexes/OS/usr/lib/libobjc-trampolines.dylib
+        0x105058000 -         0x10525bfff hermes arm64  <80d5528f2c783b90b90f747e89a9f880> /private/var/containers/Bundle/Application/27DCBF5A-9B86-49B0-90CC-C069A0733E60/RadarScout.app/Frameworks/hermes.framework/hermes
+        0x196bfc000 -         0x196c4d47f libobjc.A.dylib arm64e  <0ab507cfcb123ccd99679aac912af8e1> /usr/lib/libobjc.A.dylib
+        0x196c81000 -         0x196d2617f dyld arm64e  <41de795b928337fd917ed674bb73f541> /usr/lib/dyld
+        0x196d27000 -         0x196d4159f libc++abi.dylib arm64e  <9bb6bd63c74f32b281361f263c4d1a06> /usr/lib/libc++abi.dylib
+        0x1972db000 -         0x1981636df Foundation arm64e  <2f9c66e87a0e379e8608f42ef19f0c33> /System/Library/Frameworks/Foundation.framework/Foundation
+        0x19a049000 -         0x19a5e579f CoreFoundation arm64e  <fe9658b29de63fa5907b0b3a3bcbb0b7> /System/Library/Frameworks/CoreFoundation.framework/CoreFoundation
+        0x19fc4f000 -         0x1a218fd7f UIKitCore arm64e  <9ee8c19aa3703599823b34b84131aad7> /System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore
+        0x1a5b87000 -         0x1a5c061b7 libsystem_c.dylib arm64e  <2d1e74c15d0335aeb31babe7286be166> /usr/lib/system/libsystem_c.dylib
+        0x1a9775000 -         0x1a9805a7b libc++.1.dylib arm64e  <1021bb438e783e4da7a4876bcdd5b9f2> /usr/lib/libc++.1.dylib
+        0x1af499000 -         0x1af84977f CFNetwork arm64e  <357a18765f973b178d5ba2536cea32ba> /System/Library/Frameworks/CFNetwork.framework/CFNetwork
+        0x1c9eee000 -         0x1ca1a087f MediaExperience arm64e  <0b54a048314c3183844b37168302fbdd> /System/Library/PrivateFrameworks/MediaExperience.framework/MediaExperience
+        0x1d446a000 -         0x1d44b05ff libdispatch.dylib arm64e  <e1a24fa021603366ae7e420f0fa3c5bc> /usr/lib/system/libdispatch.dylib
+        0x1f923c000 -         0x1f92484ef libsystem_pthread.dylib arm64e  <9e89e20fcf2d31a9a23f158eb5a0affe> /usr/lib/system/libsystem_pthread.dylib
+        0x23f7e2000 -         0x23f7ea7bf GraphicsServices arm64e  <d0a89589718a3d3a96dad2c99bb19040> /System/Library/PrivateFrameworks/GraphicsServices.framework/GraphicsServices
+        0x2491bf000 -         0x2491faae7 libsystem_kernel.dylib arm64e  <eb06421e7aa8303faaabb7501b063f9d> /usr/lib/system/libsystem_kernel.dylib
+
+EOF

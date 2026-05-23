@@ -1,0 +1,104 @@
+{
+  "cli": {
+    "version": ">= 18.0.1",
+    "appVersionSource": "local"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "YARN_IGNORE_ENGINES": "1"
+      },
+      "ios": {
+        "simulator": false,
+        "image": "auto"
+      },
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "adhoc": {
+      "developmentClient": false,
+      "credentialsSource": "local",
+      "distribution": "internal",
+      "channel": "adhoc",
+      "env": {
+        "EXPO_SKIP_DOCTOR_CHECK": "1"
+      },
+      "ios": {
+        "simulator": false,
+        "image": "auto",
+        "buildConfiguration": "Release"
+      }
+    },
+    "preview": {
+      "credentialsSource": "local",
+      "distribution": "internal",
+      "channel": "preview",
+      "ios": {
+        "simulator": false,
+        "image": "auto"
+      },
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "testflight": {
+      "credentialsSource": "local",
+      "distribution": "store",
+      "developmentClient": false,
+      "channel": "testflight",
+      "env": {
+        "EXPO_SKIP_DOCTOR_CHECK": "1",
+        "EXPO_PUBLIC_AD_DEBUG": "1",
+        "EXPO_PUBLIC_ADMOB_FORCE_TEST_IDS": "1"
+      },
+      "ios": {
+        "simulator": false,
+        "image": "auto",
+        "buildConfiguration": "Release"
+      }
+    },
+    "production": {
+      "credentialsSource": "local",
+      "distribution": "store",
+      "developmentClient": false,
+      "channel": "production",
+      "env": {
+        "EXPO_SKIP_DOCTOR_CHECK": "1"
+      },
+      "ios": {
+        "simulator": false,
+        "image": "auto",
+        "buildConfiguration": "Release"
+      },
+      "android": {
+        "buildType": "app-bundle"
+      }
+    },
+    "apk": {
+      "credentialsSource": "local",
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      }
+    }
+  },
+  "submit": {
+    "testflight": {
+      "ios": {
+        "ascAppId": "6758140652",
+        "ascApiKeyPath": "${EXPO_APPLE_APP_STORE_CONNECT_API_KEY_PATH}",
+        "ascApiKeyIssuerId": "${EXPO_APPLE_APP_STORE_CONNECT_API_KEY_ISSUER_ID}",
+        "ascApiKeyId": "${EXPO_APPLE_APP_STORE_CONNECT_API_KEY_ID}"
+      }
+    },
+    "production": {
+      "android": {
+       "serviceAccountKeyPath": "./google-service-account.json",
+       "track": "internal"
+      }
+    }
+  }
+}

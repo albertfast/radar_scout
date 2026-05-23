@@ -1,0 +1,947 @@
+const MAP_HTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+  <script src="https://unpkg.com/maplibre-gl@5.21.1/dist/maplibre-gl.js"><\/script>
+  <link href="https://unpkg.com/maplibre-gl@5.21.1/dist/maplibre-gl.css" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body, #map { width: 100%; height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+    body { background: #06111d; }
+    .maplibregl-ctrl-top-left,
+    .maplibregl-ctrl-top-right,
+    .maplibregl-ctrl-bottom-left { display: none !important; }
+    .maplibregl-ctrl-bottom-right { right: 12px !important; bottom: 20px !important; }
+    .maplibregl-ctrl-group {
+      border-radius: 14px !important;
+      overflow: hidden;
+      border: 1px solid rgba(138, 166, 211, 0.14) !important;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35) !important;
+      background: rgba(9, 20, 37, 0.9) !important;
+      backdrop-filter: blur(14px);
+    }
+    .maplibregl-ctrl-group button {
+      width: 42px !important;
+      height: 42px !important;
+      background: transparent !important;
+    }
+    .maplibregl-ctrl-group button span {
+      filter: brightness(0) saturate(100%) invert(88%) sepia(4%) saturate(1211%) hue-rotate(181deg) brightness(98%) contrast(92%) !important;
+    }
+    .maplibregl-ctrl-attrib {
+      right: auto !important;
+      left: 12px !important;
+      bottom: 12px !important;
+      background: rgba(9, 20, 37, 0.74) !important;
+      border-radius: 10px !important;
+      padding: 2px 8px !important;
+      color: #9bb0cb !important;
+      font-size: 10px !important;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24) !important;
+    }
+    .maplibregl-ctrl-attrib a { color: #c7d5ea !important; }
+    .maplibregl-popup { display: none !important; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+    var cameraState = { bearing: 0, navigation: false };
+    var defaultBrowseCamera = { lat: 20, lng: 0, zoom: 1.6, pitch: 0, bearing: 0 };
+    var userMarker = null;
+    var userMarkerElement = null;
+    var destMarker = null;
+    var radarMarkers = {};
+    var highlightedRadarId = null;
+
+    var map = new maplibregl.Map({
+      container: 'map',
+      style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+      center: [defaultBrowseCamera.lng, defaultBrowseCamera.lat],
+      zoom: defaultBrowseCamera.zoom,
+      pitch: 0,
+      bearing: 0,
+      maxPitch: 68,
+      attributionControl: true,
+      canvasContextAttributes: { antialias: true },
+    });
+
+    map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'bottom-right');
+
+    function send(type, payload) {
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: type, payload: payload }));
+      }
+    }
+
+    function normalizeBearing(value) {
+      return ((value % 360) + 360) % 360;
+    }
+
+    function smoothBearing(current, target, factor) {
+      if (typeof current !== 'number' || !isFinite(current)) {
+        return normalizeBearing(target);
+      }
+
+      var delta = ((target - current + 540) % 360) - 180;
+      return normalizeBearing(current + delta * factor);
+    }
+
+    function resolveBearing(heading, routeHeading) {
+      var nextBearing = typeof heading === 'number' && isFinite(heading) && heading > 0
+        ? heading
+        : (typeof routeHeading === 'number' && isFinite(routeHeading) ? routeHeading : cameraState.bearing);
+
+      cameraState.bearing = smoothBearing(cameraState.bearing || nextBearing || 0, nextBearing || 0, 0.28);
+      return cameraState.bearing;
+    }
+
+    function getNavigationPadding() {
+      var height = Math.max(window.innerHeight || 0, 720);
+      return {
+        top: 134,
+        bottom: Math.round(height * 0.35),
+        left: 24,
+        right: 24,
+      };
+    }
+
+    function getBrowsePadding() {
+      return {
+        top: 104,
+        bottom: 284,
+        left: 24,
+        right: 24,
+      };
+    }
+
+    function getCameraZoom(speed, explicitZoom) {
+      if (typeof explicitZoom === 'number' && isFinite(explicitZoom)) {
+        return explicitZoom;
+      }
+
+      var currentSpeed = typeof speed === 'number' && isFinite(speed) ? speed : 0;
+      if (currentSpeed > 24) return 15.4;
+      if (currentSpeed > 18) return 15.8;
+      if (currentSpeed > 12) return 16.15;
+      if (currentSpeed > 6) return 16.55;
+      return 16.95;
+    }
+
+    function ensureUserMarker() {
+      if (userMarkerElement) {
+        return userMarkerElement;
+      }
+
+      var wrapper = document.createElement('div');
+      wrapper.innerHTML = ''
+        + '<div style="position:relative;width:40px;height:40px;">'
+        + '  <div style="position:absolute;inset:0;border-radius:999px;background:rgba(96,165,250,0.16);animation:mapflowPulse 2.2s ease-out infinite;"></div>'
+        + '  <div style="position:absolute;left:50%;top:6px;margin-left:-7px;width:14px;height:18px;transform-origin:50% 75%;" data-marker-arrow>'
+        + '    <svg width="14" height="18" viewBox="0 0 14 18" fill="none" xmlns="http://www.w3.org/2000/svg">'
+        + '      <path d="M7 0L14 14H8.9L7 18L5.1 14H0L7 0Z" fill="#5b6ef7"/>'
+        + '    </svg>'
+        + '  </div>'
+        + '  <div style="position:absolute;left:50%;top:50%;width:18px;height:18px;margin-left:-9px;margin-top:-9px;border-radius:999px;background:#5b6ef7;border:3px solid white;box-shadow:0 8px 18px rgba(91,110,247,0.38);"></div>'
+        + '</div>'
+        + '<style>@keyframes mapflowPulse { 0% { transform: scale(0.45); opacity: 0.95; } 100% { transform: scale(1.95); opacity: 0; } }</style>';
+
+      userMarkerElement = wrapper.firstChild;
+      userMarker = new maplibregl.Marker({ element: userMarkerElement, anchor: 'center' })
+        .setLngLat([defaultBrowseCamera.lng, defaultBrowseCamera.lat])
+        .addTo(map);
+
+      return userMarkerElement;
+    }
+
+    function updateUserLocation(payload) {
+      if (!payload) return;
+
+      ensureUserMarker();
+      userMarker.setLngLat([payload.lng, payload.lat]);
+
+      var arrow = userMarkerElement.querySelector('[data-marker-arrow]');
+      var arrowBearing = resolveBearing(payload.heading, payload.routeHeading);
+      if (arrow) {
+        arrow.style.transform = 'rotate(' + arrowBearing + 'deg)';
+      }
+    }
+
+    function updateDestination(payload) {
+      if (!payload) return;
+
+      if (destMarker) {
+        destMarker.remove();
+      }
+
+      var element = document.createElement('div');
+      element.innerHTML = ''
+        + '<div style="width:30px;height:38px;">'
+        + '  <svg width="30" height="38" viewBox="0 0 30 38" fill="none" xmlns="http://www.w3.org/2000/svg">'
+        + '    <path d="M15 0C6.716 0 0 6.716 0 15c0 11.25 15 23 15 23s15-11.75 15-23C30 6.716 23.284 0 15 0Z" fill="#f97316"/>'
+        + '    <circle cx="15" cy="15" r="6.5" fill="white"/>'
+        + '  </svg>'
+        + '</div>';
+
+      destMarker = new maplibregl.Marker({ element: element, anchor: 'bottom' })
+        .setLngLat([payload.lng, payload.lat])
+        .addTo(map);
+    }
+
+    function getRadarMarkerColors(marker) {
+      var kind = marker && marker.markerKind ? marker.markerKind : (marker && marker.type ? marker.type : 'camera');
+
+      if (kind === 'camera' || kind === 'speed_camera' || kind === 'fixed') {
+        return {
+          shell: '#7B0F1E',
+          border: '#FF6B6B',
+          core: '#FFF7F7',
+        };
+      }
+
+      if (kind === 'red_light') {
+        return {
+          shell: '#3A0910',
+          border: '#FF5B5B',
+          core: '#FFE8E8',
+        };
+      }
+
+      if (kind === 'police') {
+        return {
+          shell: '#0E2748',
+          border: '#60A5FA',
+          core: '#E0F2FE',
+        };
+      }
+
+      if (kind === 'mobile') {
+        return {
+          shell: '#3B1D07',
+          border: '#F59E0B',
+          core: '#FEF3C7',
+        };
+      }
+
+      if (kind === 'traffic_enforcement') {
+        return {
+          shell: '#3A0D17',
+          border: '#FB7185',
+          core: '#FFE4E6',
+        };
+      }
+
+      return {
+        shell: '#3A0F0A',
+        border: '#FF7849',
+        core: '#FFF4EE',
+      };
+    }
+
+    function buildRadarCameraSvg(colors) {
+      return ''
+        + '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">'
+        + '  <path d="M3.2 6.1C3.2 5.26 3.88 4.58 4.72 4.58H6.12L7.05 3.44C7.23 3.22 7.5 3.1 7.79 3.1H10.21C10.5 3.1 10.77 3.22 10.95 3.44L11.88 4.58H13.28C14.12 4.58 14.8 5.26 14.8 6.1V11.28C14.8 12.12 14.12 12.8 13.28 12.8H4.72C3.88 12.8 3.2 12.12 3.2 11.28V6.1Z" fill="' + colors.core + '" stroke="' + colors.border + '" stroke-width="1.1"/>'
+        + '  <circle cx="9" cy="8.55" r="2.1" fill="' + colors.border + '"/>'
+        + '  <circle cx="14.1" cy="7.2" r="0.95" fill="' + colors.core + '"/>'
+        + '  <path d="M14.8 9.95C15.9 10.25 16.65 11.1 16.65 12.15" stroke="' + colors.border + '" stroke-width="1" stroke-linecap="round" opacity="0.88"/>'
+        + '  <path d="M15.8 8.85C17.15 9.3 18 10.42 18 11.75" stroke="' + colors.core + '" stroke-width="0.85" stroke-linecap="round" opacity="0.8"/>'
+        + '</svg>';
+    }
+
+    function createRadarMarkerElement(marker) {
+      var colors = getRadarMarkerColors(marker);
+      var wrapper = document.createElement('div');
+      wrapper.style.position = 'relative';
+      wrapper.style.width = '40px';
+      wrapper.style.height = '54px';
+      wrapper.style.pointerEvents = 'none';
+      wrapper.style.transformOrigin = '50% 88%';
+      wrapper.style.transition = 'transform 160ms ease, filter 160ms ease';
+
+      var glow = document.createElement('div');
+      glow.setAttribute('data-radar-glow', '1');
+      glow.style.position = 'absolute';
+      glow.style.left = '50%';
+      glow.style.top = '5px';
+      glow.style.width = '24px';
+      glow.style.height = '24px';
+      glow.style.marginLeft = '-12px';
+      glow.style.borderRadius = '999px';
+      glow.style.background = 'radial-gradient(circle, rgba(88,226,255,0.34) 0%, rgba(88,226,255,0.16) 45%, rgba(88,226,255,0) 72%)';
+      glow.style.opacity = '0';
+      glow.style.transition = 'opacity 160ms ease';
+
+      var shadow = document.createElement('div');
+      shadow.setAttribute('data-radar-shadow', '1');
+      shadow.style.position = 'absolute';
+      shadow.style.left = '50%';
+      shadow.style.bottom = '4px';
+      shadow.style.width = '14px';
+      shadow.style.height = '4px';
+      shadow.style.marginLeft = '-7px';
+      shadow.style.borderRadius = '999px';
+      shadow.style.background = 'rgba(2, 8, 19, 0.55)';
+      shadow.style.filter = 'blur(4px)';
+      shadow.style.opacity = '0.9';
+      shadow.style.transition = 'opacity 160ms ease, transform 160ms ease';
+
+      var pin = document.createElement('div');
+      pin.setAttribute('data-radar-pin', '1');
+      pin.style.position = 'absolute';
+      pin.style.left = '50%';
+      pin.style.top = '8px';
+      pin.style.width = '24px';
+      pin.style.height = '24px';
+      pin.style.marginLeft = '-12px';
+      pin.style.borderRadius = '999px';
+      pin.style.border = '1.6px solid ' + colors.border;
+      pin.style.background = colors.shell;
+      pin.style.display = 'flex';
+      pin.style.alignItems = 'center';
+      pin.style.justifyContent = 'center';
+      pin.style.boxShadow = '0 6px 14px rgba(2, 8, 19, 0.24)';
+
+      var cameraIcon = document.createElement('div');
+      cameraIcon.setAttribute('data-radar-core', '1');
+      cameraIcon.style.width = '18px';
+      cameraIcon.style.height = '18px';
+      cameraIcon.style.display = 'flex';
+      cameraIcon.style.alignItems = 'center';
+      cameraIcon.style.justifyContent = 'center';
+      cameraIcon.innerHTML = buildRadarCameraSvg(colors);
+
+      var stem = document.createElement('div');
+      stem.setAttribute('data-radar-stem', '1');
+      stem.style.position = 'absolute';
+      stem.style.left = '50%';
+      stem.style.top = '29px';
+      stem.style.width = '2px';
+      stem.style.height = '12px';
+      stem.style.marginLeft = '-1px';
+      stem.style.borderRadius = '999px';
+      stem.style.background = colors.border;
+      stem.style.opacity = '0.92';
+
+      wrapper.appendChild(glow);
+      wrapper.appendChild(shadow);
+      pin.appendChild(cameraIcon);
+      wrapper.appendChild(pin);
+      wrapper.appendChild(stem);
+
+      return wrapper;
+    }
+
+    function updateRadarMarkerVisual(record, marker) {
+      if (!record || !record.element) {
+        return;
+      }
+
+      var colors = getRadarMarkerColors(marker);
+
+      var pin = record.element.querySelector('[data-radar-pin]');
+      if (pin) {
+        pin.style.background = colors.shell;
+        pin.style.borderColor = colors.border;
+      }
+
+      var core = record.element.querySelector('[data-radar-core]');
+      if (core) {
+        core.innerHTML = buildRadarCameraSvg(colors);
+      }
+
+      var stem = record.element.querySelector('[data-radar-stem]');
+      if (stem) {
+        stem.style.background = colors.border;
+      }
+
+      var isActive = Boolean(marker.active) || (highlightedRadarId && marker.id === highlightedRadarId);
+      record.element.style.transform = isActive ? 'scale(1.06)' : 'scale(1)';
+      record.element.style.filter = isActive
+        ? 'drop-shadow(0 6px 10px rgba(0, 0, 0, 0.24))'
+        : 'drop-shadow(0 5px 8px rgba(0, 0, 0, 0.18))';
+
+      var glow = record.element.querySelector('[data-radar-glow]');
+      if (glow) {
+        glow.style.opacity = isActive ? '1' : '0';
+      }
+
+      var shadow = record.element.querySelector('[data-radar-shadow]');
+      if (shadow) {
+        shadow.style.opacity = isActive ? '0.72' : '0.9';
+        shadow.style.transform = isActive ? 'scale(1.08)' : 'scale(1)';
+      }
+    }
+
+    function upsertRadarMarker(marker) {
+      if (!marker || !marker.id) {
+        return;
+      }
+
+      var latitude = Number(marker.lat);
+      var longitude = Number(marker.lng);
+      if (!isFinite(latitude) || !isFinite(longitude)) {
+        return;
+      }
+
+      var record = radarMarkers[marker.id];
+      if (!record) {
+        var element = createRadarMarkerElement(marker);
+        var markerInstance = new maplibregl.Marker({
+          element: element,
+          anchor: 'bottom',
+        })
+          .setLngLat([longitude, latitude])
+          .addTo(map);
+
+        record = {
+          marker: markerInstance,
+          element: element,
+          data: marker,
+        };
+        radarMarkers[marker.id] = record;
+      } else {
+        record.marker.setLngLat([longitude, latitude]);
+        record.data = marker;
+      }
+
+      updateRadarMarkerVisual(record, marker);
+    }
+
+    function setRadarMarkers(payload) {
+      if (!Array.isArray(payload)) {
+        clearRadarMarkers();
+        return;
+      }
+
+      var nextIds = {};
+      payload.forEach(function (marker) {
+        if (!marker || !marker.id) return;
+        nextIds[marker.id] = true;
+        upsertRadarMarker(marker);
+      });
+
+      Object.keys(radarMarkers).forEach(function (id) {
+        if (nextIds[id]) {
+          return;
+        }
+
+        var record = radarMarkers[id];
+        if (record && record.marker) {
+          record.marker.remove();
+        }
+        delete radarMarkers[id];
+      });
+    }
+
+    function clearRadarMarkers() {
+      Object.keys(radarMarkers).forEach(function (id) {
+        var record = radarMarkers[id];
+        if (record && record.marker) {
+          record.marker.remove();
+        }
+        delete radarMarkers[id];
+      });
+      highlightedRadarId = null;
+    }
+
+    function highlightRadar(payload) {
+      highlightedRadarId = payload && payload.id ? payload.id : null;
+
+      Object.keys(radarMarkers).forEach(function (id) {
+        var record = radarMarkers[id];
+        if (!record) return;
+        updateRadarMarkerVisual(record, record.data || {});
+      });
+    }
+
+    function ensureRouteLayers(geojson) {
+      var source = map.getSource('route');
+      if (source) {
+        source.setData(geojson);
+        return;
+      }
+
+      map.addSource('route', { type: 'geojson', data: geojson });
+      map.addLayer({
+        id: 'route-glow',
+        type: 'line',
+        source: 'route',
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: { 'line-color': '#aefef4', 'line-width': 16, 'line-opacity': 0.22 },
+      });
+      map.addLayer({
+        id: 'route-shadow',
+        type: 'line',
+        source: 'route',
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: { 'line-color': '#0e605a', 'line-width': 10, 'line-opacity': 0.62 },
+      });
+      map.addLayer({
+        id: 'route-line',
+        type: 'line',
+        source: 'route',
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: { 'line-color': '#79f2da', 'line-width': 6, 'line-opacity': 0.98 },
+      });
+    }
+
+    function fitRoute(geometry) {
+      var bounds = new maplibregl.LngLatBounds();
+      geometry.forEach(function (coordinate) { bounds.extend(coordinate); });
+      map.fitBounds(bounds, {
+        padding: { top: 112, bottom: 336, left: 42, right: 42 },
+        duration: 1100,
+        maxZoom: 17,
+      });
+    }
+
+    function updateRoute(payload) {
+      if (!payload || !Array.isArray(payload.geometry) || payload.geometry.length < 2) {
+        return;
+      }
+
+      var geojson = {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'LineString',
+          coordinates: payload.geometry,
+        },
+      };
+
+      ensureRouteLayers(geojson);
+
+      if (!cameraState.navigation) {
+        fitRoute(payload.geometry);
+      }
+    }
+
+    function clearRoute() {
+      ['route-line', 'route-shadow', 'route-glow'].forEach(function (id) {
+        if (map.getLayer(id)) {
+          map.removeLayer(id);
+        }
+      });
+
+      if (map.getSource('route')) {
+        map.removeSource('route');
+      }
+
+      if (destMarker) {
+        destMarker.remove();
+        destMarker = null;
+      }
+
+      cameraState.navigation = false;
+    }
+
+    function moveCamera(payload, followMode) {
+      if (!payload) return;
+
+      cameraState.navigation = Boolean(payload.navigation || followMode);
+
+      map.easeTo({
+        center: [payload.lng, payload.lat],
+        bearing: resolveBearing(payload.heading, payload.routeHeading),
+        pitch: cameraState.navigation ? (payload.pitch || 58) : (payload.pitch || 0),
+        zoom: getCameraZoom(payload.speed, payload.zoom),
+        padding: cameraState.navigation ? getNavigationPadding() : getBrowsePadding(),
+        duration: followMode ? 850 : 1000,
+        essential: true,
+        easing: function (t) {
+          if (followMode) {
+            return 1 - Math.pow(1 - t, 2);
+          }
+          return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        },
+      });
+    }
+
+    function publishCameraState() {
+      if (cameraState.navigation) {
+        return;
+      }
+
+      var center = map.getCenter();
+      send('cameraChanged', {
+        lat: center.lat,
+        lng: center.lng,
+        zoom: map.getZoom(),
+        pitch: map.getPitch(),
+        bearing: map.getBearing(),
+      });
+    }
+
+    function add3DBuildings() {
+      if (map.getLayer('mapflow-3d-buildings')) {
+        return;
+      }
+
+      if (!map.getSource('mapflow-openmaptiles')) {
+        map.addSource('mapflow-openmaptiles', {
+          type: 'vector',
+          tiles: ['https://basemaps.cartocdn.com/tiles/v3/assets/openmaptiles/{z}/{x}/{y}.pbf'],
+          minzoom: 0,
+          maxzoom: 14,
+        });
+      }
+
+      var labelLayer = null;
+      var layers = map.getStyle().layers || [];
+      for (var index = 0; index < layers.length; index += 1) {
+        if (layers[index].type === 'symbol') {
+          labelLayer = layers[index].id;
+          break;
+        }
+      }
+
+      if (!map.getLayer('mapflow-water')) {
+        map.addLayer({
+          id: 'mapflow-water',
+          source: 'mapflow-openmaptiles',
+          'source-layer': 'water',
+          type: 'fill',
+          paint: {
+            'fill-color': '#143f6b',
+            'fill-opacity': 0.98,
+          }
+        }, labelLayer || undefined);
+      }
+
+      if (!map.getLayer('mapflow-park')) {
+        map.addLayer({
+          id: 'mapflow-park',
+          source: 'mapflow-openmaptiles',
+          'source-layer': 'park',
+          type: 'fill',
+          paint: {
+            'fill-color': '#1d6d40',
+            'fill-opacity': 0.94,
+          }
+        }, labelLayer || undefined);
+      }
+
+      if (!map.getLayer('mapflow-landcover')) {
+        map.addLayer({
+          id: 'mapflow-landcover',
+          source: 'mapflow-openmaptiles',
+          'source-layer': 'landcover',
+          type: 'fill',
+          paint: {
+            'fill-color': [
+              'match',
+              ['get', 'class'],
+              'wood', '#1a5e3a',
+              'grass', '#236540',
+              'scrub', '#315d46',
+              'crop', '#4b6430',
+              '#132438'
+            ],
+            'fill-opacity': 0.76,
+          }
+        }, labelLayer || undefined);
+      }
+
+      if (!map.getLayer('mapflow-waterway')) {
+        map.addLayer({
+          id: 'mapflow-waterway',
+          source: 'mapflow-openmaptiles',
+          'source-layer': 'waterway',
+          type: 'line',
+          paint: {
+            'line-color': '#2f7bc1',
+            'line-width': 1.4,
+            'line-opacity': 0.92,
+          }
+        }, labelLayer || undefined);
+      }
+
+      if (!map.getLayer('mapflow-road-major-casing')) {
+        map.addLayer({
+          id: 'mapflow-road-major-casing',
+          source: 'mapflow-openmaptiles',
+          'source-layer': 'transportation',
+          type: 'line',
+          filter: [
+            'match',
+            ['get', 'class'],
+            ['motorway', 'trunk', 'primary', 'secondary', 'tertiary'],
+            true,
+            false
+          ],
+          paint: {
+            'line-color': '#101e34',
+            'line-width': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              10, 2.2,
+              13, 3.5,
+              16, 7.2
+            ],
+            'line-opacity': 0.94,
+          }
+        }, labelLayer || undefined);
+      }
+
+      if (!map.getLayer('mapflow-road-major')) {
+        map.addLayer({
+          id: 'mapflow-road-major',
+          source: 'mapflow-openmaptiles',
+          'source-layer': 'transportation',
+          type: 'line',
+          filter: [
+            'match',
+            ['get', 'class'],
+            ['motorway', 'trunk', 'primary', 'secondary', 'tertiary'],
+            true,
+            false
+          ],
+          paint: {
+            'line-color': '#4775b7',
+            'line-width': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              10, 1.4,
+              13, 2.5,
+              16, 5.2
+            ],
+            'line-opacity': 0.97,
+          }
+        }, labelLayer || undefined);
+      }
+
+      if (!map.getLayer('mapflow-road-minor-casing')) {
+        map.addLayer({
+          id: 'mapflow-road-minor-casing',
+          source: 'mapflow-openmaptiles',
+          'source-layer': 'transportation',
+          type: 'line',
+          filter: [
+            'match',
+            ['get', 'class'],
+            ['street', 'street_limited', 'residential', 'service', 'living_street'],
+            true,
+            false
+          ],
+          paint: {
+            'line-color': '#0d192c',
+            'line-width': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              12, 1.2,
+              14, 1.8,
+              17, 3.4
+            ],
+            'line-opacity': 0.9,
+          }
+        }, labelLayer || undefined);
+      }
+
+      if (!map.getLayer('mapflow-road-minor')) {
+        map.addLayer({
+          id: 'mapflow-road-minor',
+          source: 'mapflow-openmaptiles',
+          'source-layer': 'transportation',
+          type: 'line',
+          filter: [
+            'match',
+            ['get', 'class'],
+            ['street', 'street_limited', 'residential', 'service', 'living_street'],
+            true,
+            false
+          ],
+          paint: {
+            'line-color': '#31547f',
+            'line-width': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              12, 0.85,
+              14, 1.4,
+              17, 2.7
+            ],
+            'line-opacity': 0.94,
+          }
+        }, labelLayer || undefined);
+      }
+
+      map.addLayer({
+        id: 'mapflow-3d-buildings',
+        source: 'mapflow-openmaptiles',
+        'source-layer': 'building',
+        type: 'fill-extrusion',
+        minzoom: 14,
+        paint: {
+          'fill-extrusion-color': [
+            'interpolate',
+            ['linear'],
+            ['get', 'render_height'],
+            0, '#102139',
+            120, '#173254',
+            260, '#24456e',
+            560, '#356299'
+          ],
+          'fill-extrusion-height': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            14, 0,
+            15, ['get', 'render_height']
+          ],
+          'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], 0],
+          'fill-extrusion-opacity': 0.46
+        }
+      }, labelLayer || undefined);
+    }
+
+    function applyDarkNavigationPalette() {
+      var layers = map.getStyle().layers || [];
+
+      layers.forEach(function (layer) {
+        var sourceLayer = layer['source-layer'];
+
+        try {
+          if (layer.type === 'background') {
+            map.setPaintProperty(layer.id, 'background-color', '#07121f');
+          }
+
+          if (sourceLayer === 'water' && layer.type === 'fill') {
+            map.setPaintProperty(layer.id, 'fill-color', '#153c63');
+            map.setPaintProperty(layer.id, 'fill-opacity', 0.96);
+          }
+
+          if (sourceLayer === 'waterway' && layer.type === 'line') {
+            map.setPaintProperty(layer.id, 'line-color', '#2f78bf');
+            map.setPaintProperty(layer.id, 'line-opacity', 0.9);
+          }
+
+          if (sourceLayer === 'park' && layer.type === 'fill') {
+            map.setPaintProperty(layer.id, 'fill-color', '#1b6b3c');
+            map.setPaintProperty(layer.id, 'fill-opacity', 0.96);
+          }
+
+          if (sourceLayer === 'landcover' && layer.type === 'fill') {
+            map.setPaintProperty(layer.id, 'fill-color', [
+              'match',
+              ['get', 'class'],
+              'wood', '#1a5d3a',
+              'grass', '#24633f',
+              'scrub', '#315b46',
+              'crop', '#4d6031',
+              '#14253a'
+            ]);
+            map.setPaintProperty(layer.id, 'fill-opacity', 0.72);
+          }
+
+          if (sourceLayer === 'transportation' && layer.type === 'line') {
+            map.setPaintProperty(layer.id, 'line-color', [
+              'match',
+              ['get', 'class'],
+              'motorway', '#628ad3',
+              'trunk', '#5d84ca',
+              'primary', '#4b73b6',
+              'secondary', '#40659f',
+              'tertiary', '#365887',
+              'street', '#28456e',
+              'street_limited', '#28456e',
+              'residential', '#233c60',
+              'service', '#203554',
+              'living_street', '#203554',
+              '#263a57'
+            ]);
+            map.setPaintProperty(layer.id, 'line-opacity', 0.86);
+          }
+
+          if (sourceLayer === 'boundary' && layer.type === 'line') {
+            map.setPaintProperty(layer.id, 'line-color', '#22415f');
+            map.setPaintProperty(layer.id, 'line-opacity', 0.28);
+          }
+
+          if (sourceLayer === 'building' && layer.type === 'fill') {
+            map.setPaintProperty(layer.id, 'fill-color', '#15253d');
+            map.setPaintProperty(layer.id, 'fill-opacity', 0.62);
+          }
+
+          if (layer.type === 'symbol' && map.getLayoutProperty(layer.id, 'text-field')) {
+            if (sourceLayer === 'place' || sourceLayer === 'transportation_name' || sourceLayer === 'poi') {
+              map.setPaintProperty(layer.id, 'text-color', '#d6e4fb');
+              map.setPaintProperty(layer.id, 'text-halo-color', '#08111e');
+              map.setPaintProperty(layer.id, 'text-halo-width', 1.1);
+            } else {
+              map.setPaintProperty(layer.id, 'text-color', '#8ea8cb');
+              map.setPaintProperty(layer.id, 'text-halo-color', '#06111d');
+              map.setPaintProperty(layer.id, 'text-halo-width', 0.9);
+            }
+          }
+        } catch (error) {
+          // Ignore style layers that don't expose the property we're trying to tint.
+        }
+      });
+    }
+
+    map.on('load', function () {
+      applyDarkNavigationPalette();
+      add3DBuildings();
+      send('mapReady');
+    });
+
+    map.on('click', function (event) {
+      send('mapClick', {
+        lat: event.lngLat.lat,
+        lng: event.lngLat.lng,
+      });
+    });
+
+    map.on('moveend', function () {
+      publishCameraState();
+    });
+
+    window.addEventListener('message', function (event) {
+      try {
+        var message = JSON.parse(event.data);
+        switch (message.type) {
+          case 'updateLocation':
+            updateUserLocation(message.payload);
+            break;
+          case 'updateDestination':
+            updateDestination(message.payload);
+            break;
+          case 'updateRoute':
+            updateRoute(message.payload);
+            break;
+          case 'flyTo':
+            moveCamera(message.payload, false);
+            break;
+          case 'followUser':
+            moveCamera(message.payload || {}, true);
+            break;
+          case 'clearRoute':
+            clearRoute();
+            break;
+          case 'setRadarMarkers':
+            setRadarMarkers(message.payload);
+            break;
+          case 'clearRadarMarkers':
+            clearRadarMarkers();
+            break;
+          case 'highlightRadar':
+            highlightRadar(message.payload);
+            break;
+        }
+      } catch (error) {
+        // Ignore malformed bridge payloads.
+      }
+    });
+  <\/script>
+</body>
+</html>`;
+
+export default MAP_HTML;

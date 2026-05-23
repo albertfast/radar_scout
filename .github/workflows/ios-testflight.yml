@@ -1,0 +1,275 @@
+name: Build iOS TestFlight
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-submit-ios:
+    runs-on: macos-15
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      EXPO_APPLE_APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+      EXPO_APPLE_APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.ASC_API_KEY_ISSUER_ID }}
+      EXPO_RUNTIME_VERSION: testflight-${{ github.run_number }}
+      EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL || secrets.SUPABASE_URL || vars.EXPO_PUBLIC_SUPABASE_URL || vars.SUPABASE_URL }}
+      EXPO_PUBLIC_SUPABASE_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_KEY || secrets.SUPABASE_KEY || secrets.SUPABASE_ANON_KEY || vars.EXPO_PUBLIC_SUPABASE_KEY || vars.SUPABASE_KEY || vars.SUPABASE_ANON_KEY }}
+      EXPO_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || vars.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY }}
+      EXPO_PUBLIC_FIREBASE_WEB_CLIENT_ID: ${{ secrets.EXPO_PUBLIC_FIREBASE_WEB_CLIENT_ID || vars.EXPO_PUBLIC_FIREBASE_WEB_CLIENT_ID }}
+      EXPO_PUBLIC_FIREBASE_IOS_CLIENT_ID: ${{ secrets.EXPO_PUBLIC_FIREBASE_IOS_CLIENT_ID || vars.EXPO_PUBLIC_FIREBASE_IOS_CLIENT_ID }}
+      EXPO_PUBLIC_REVENUECAT_IOS_API_KEY: ${{ secrets.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY || vars.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY }}
+      EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY: ${{ secrets.EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY || vars.EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY }}
+      EAS_NO_VCS: 1
+      IPHONEOS_DEPLOYMENT_TARGET: "16.1"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: List available Xcode versions
+        run: ls -la /Applications/ | grep Xcode
+
+      - name: Select Xcode 26.0.1
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "26.0.1"
+
+      - name: Install iOS platform (required for generic iOS device archive)
+        run: |
+          sudo xcodebuild -runFirstLaunch
+          xcrun simctl list >/dev/null
+          xcodebuild -downloadPlatform iOS
+          xcodebuild -version
+          xcodebuild -showsdks
+      - name: Show Xcode and SDK version
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks
+          xcrun --sdk iphoneos --show-sdk-path || true
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Validate required public envs
+        run: |
+          missing=0
+          for key in EXPO_PUBLIC_SUPABASE_URL EXPO_PUBLIC_SUPABASE_KEY; do
+            if [ -z "${!key}" ]; then
+              echo "::error::Missing required secret/env: $key"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "Required EXPO_PUBLIC_* variables are missing. Aborting iOS build."
+            exit 1
+          fi
+          for key in EXPO_PUBLIC_REVENUECAT_IOS_API_KEY EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY; do
+            if [ -z "${!key}" ]; then
+              echo "::warning::RevenueCat key missing: $key (in-app payments will be disabled in this build)"
+            fi
+          done
+          for key in EXPO_PUBLIC_GOOGLE_MAPS_API_KEY EXPO_PUBLIC_FIREBASE_WEB_CLIENT_ID EXPO_PUBLIC_FIREBASE_IOS_CLIENT_ID; do
+            if [ -z "${!key}" ]; then
+              echo "::warning::Optional env missing: $key (related feature may be limited in this build)"
+            fi
+          done
+
+      - name: Apply dependency patches
+        run: |
+          node scripts/prepare-patches.js
+          node - <<'NODE'
+          const fs = require('fs');
+          const checks = [
+            [
+              'node_modules/react-native-maps/ios/AirGoogleMaps/AIRGoogleMapMarkerManager.h',
+              '#import "AIRMapCalloutManager.h"'
+            ],
+            [
+              'node_modules/react-native-maps/ios/AirGoogleMaps/AIRGMSMarker.h',
+              '#import "AIRMap.h"'
+            ],
+            [
+              'node_modules/react-native-maps/ios/AirGoogleMaps/AIRGMSPolyline.h',
+              '#import "AIRMap.h"'
+            ],
+            [
+              'node_modules/react-native-maps/ios/AirGoogleMaps/AIRGMSPolygon.h',
+              '#import "AIRMap.h"'
+            ],
+            [
+              'node_modules/react-native/React/Views/RCTComponentData.h',
+              '@protocol RCTEventDispatcherProtocol;'
+            ],
+          ];
+          for (const [filePath, expected] of checks) {
+            if (!fs.existsSync(filePath)) continue;
+            const content = fs.readFileSync(filePath, 'utf8');
+            if (!content.includes(expected)) {
+              throw new Error(`react-native-maps patch missing: ${filePath} does not include ${expected}`);
+            }
+          }
+          const overlayPath = 'node_modules/react-native-maps/ios/AirGoogleMaps/AIRGoogleMapOverlay.m';
+          if (fs.existsSync(overlayPath)) {
+            const overlayContent = fs.readFileSync(overlayPath, 'utf8');
+            if (overlayContent.includes('#import <React/RCTEventDispatcherProtocol.h>')) {
+              throw new Error(
+                'react-native-maps patch missing: AIRGoogleMapOverlay.m still imports RCTEventDispatcherProtocol.h'
+              );
+            }
+            if (overlayContent.includes('#import <React/RCTEventDispatcher.h>')) {
+              throw new Error(
+                'react-native-maps patch missing: AIRGoogleMapOverlay.m still imports RCTEventDispatcher.h'
+              );
+            }
+          }
+          const polylinePath = 'node_modules/react-native-maps/ios/AirGoogleMaps/AIRGoogleMapPolyline.m';
+          if (fs.existsSync(polylinePath)) {
+            const polylineContent = fs.readFileSync(polylinePath, 'utf8');
+            if (polylineContent.includes('#import "AIRGoogleMapMarkerManager.h"')) {
+              throw new Error(
+                'react-native-maps patch missing: AIRGoogleMapPolyline.m still imports AIRGoogleMapMarkerManager.h'
+              );
+            }
+          }
+          const appDelegatePath = 'ios/RadarTinder/AppDelegate.swift';
+          if (fs.existsSync(appDelegatePath)) {
+            const appDelegateContent = fs.readFileSync(appDelegatePath, 'utf8');
+            if (!appDelegateContent.includes('Bundle.main.object(forInfoDictionaryKey: "GMSApiKey")')) {
+              throw new Error('AppDelegate patch missing: Google Maps API key should be read from Info.plist');
+            }
+            const mapsInitIndex = appDelegateContent.indexOf('GMSServices.provideAPIKey');
+            const rnStartIndex = appDelegateContent.indexOf('factory.startReactNative(');
+            if (mapsInitIndex === -1 || rnStartIndex === -1 || mapsInitIndex > rnStartIndex) {
+              throw new Error(
+                'AppDelegate patch missing: GMSServices.provideAPIKey must run before factory.startReactNative'
+              );
+            }
+            if (
+              appDelegateContent.includes('FirebaseApp.configure()') &&
+              !appDelegateContent.includes('if FirebaseApp.app() == nil')
+            ) {
+              throw new Error('AppDelegate patch missing: FirebaseApp.configure should be guarded against duplicate init');
+            }
+          }
+          console.log('react-native-maps patch verification passed');
+          NODE
+      - name: Ensure Expo gitignore
+        run: |
+          touch .gitignore
+          if ! grep -qxF ".expo/" .gitignore; then
+            echo ".expo/" >> .gitignore
+          fi
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
+
+        
+
+      - name: Setup CocoaPods cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ios/Pods
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+      - name: Create App Store Connect API key file
+        env:
+          ASC_API_KEY_P8_BASE64: ${{ secrets.ASC_API_KEY_P8_BASE64 }}
+        run: |
+          mkdir -p credentials
+          echo "$ASC_API_KEY_P8_BASE64" | base64 -d > "credentials/AuthKey_${{ secrets.ASC_API_KEY_ID }}.p8"
+      - name: Setup iOS credentials from secrets
+        env:
+          IOS_DIST_P12_BASE64: ${{ secrets.IOS_DIST_P12_BASE64 }}
+          IOS_APPSTORE_PROFILE_BASE64: ${{ secrets.IOS_APPSTORE_PROFILE_BASE64 }}
+        run: |
+          echo "$IOS_DIST_P12_BASE64" | base64 -d > credentials/dist-cert.p12
+          echo "$IOS_APPSTORE_PROFILE_BASE64" | base64 -d > credentials/appstore.mobileprovision
+      - name: Create credentials.json
+        env:
+          IOS_DIST_P12_PASSWORD: ${{ secrets.IOS_DIST_P12_PASSWORD }}
+        run: |
+          cat > credentials.json << 'EOFCRED'
+          {
+            "ios": {
+              "provisioningProfilePath": "credentials/appstore.mobileprovision",
+              "distributionCertificate": {
+                "path": "credentials/dist-cert.p12",
+                "password": "${{ secrets.IOS_DIST_P12_PASSWORD }}"
+              }
+            }
+          }
+          EOFCRED
+      - name: Install CocoaPods
+        run: |
+          pwd
+          ls -la node_modules/.pnpm/react-native-maps* | head -3
+          rm -rf ios/Pods ios/Podfile.lock
+          npx expo prebuild --platform ios --clean
+          # Keep generated Podfile intact; plugin logic already handles maps pod variant by package version.
+          cd ios
+          pod install --repo-update --verbose
+          cd ..
+                   
+      - name: Build iOS LOCAL (TestFlight)
+        run: |
+          eas build --platform ios --profile testflight --local --non-interactive --clear-cache --output ./RadarTinder.ipa
+        env:
+          EXPO_APPLE_APP_STORE_CONNECT_API_KEY_PATH: >-
+            ${{ github.workspace }}/credentials/AuthKey_${{ secrets.ASC_API_KEY_ID }}.p8
+          IPHONEOS_DEPLOYMENT_TARGET: "16.1"
+
+      - name: Collect dSYM artifacts
+        if: always()
+        run: |
+          mkdir -p artifacts/dsym
+          find ~/Library/Developer/Xcode/DerivedData -type d -name "RadarTinder.app.dSYM" -print \
+            -exec ditto -c -k --sequesterRsrc --keepParent {} artifacts/dsym/ \; || true
+          ls -la artifacts/dsym || true
+
+      - name: Upload dSYM artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: RadarTinder-dSYMs
+          path: artifacts/dsym
+          if-no-files-found: warn
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RadarTinder-iOS
+          path: ./RadarTinder.ipa
+
+      - name: Submit to TestFlight
+        run: |
+          export EXPO_APPLE_APP_STORE_CONNECT_API_KEY_PATH="$(pwd)/credentials/AuthKey_${{ secrets.ASC_API_KEY_ID }}.p8"
+          echo "API Key Path: $EXPO_APPLE_APP_STORE_CONNECT_API_KEY_PATH"
+          ls -la "$EXPO_APPLE_APP_STORE_CONNECT_API_KEY_PATH"
+          eas submit --platform ios --profile testflight --non-interactive --path ./RadarTinder.ipa
+        env:
+          EXPO_APPLE_APP_STORE_CONNECT_API_KEY_PATH: >-
+            ${{ github.workspace }}/credentials/AuthKey_${{ secrets.ASC_API_KEY_ID }}.p8

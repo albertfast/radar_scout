@@ -1,0 +1,13 @@
+{
+  "react-native": {
+    "perf_auto_collection_enabled": true
+  },
+  "emulators": {
+    "dataconnect": {
+      "dataDir": "dataconnect/.dataconnect/pgliteData"
+    }
+  },
+  "dataconnect": {
+    "source": "dataconnect"
+  }
+}

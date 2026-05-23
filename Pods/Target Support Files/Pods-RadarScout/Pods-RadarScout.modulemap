@@ -1,0 +1,6 @@
+framework module Pods_RadarScout {
+  umbrella header "Pods-RadarScout-umbrella.h"
+
+  export *
+  module * { export * }
+}

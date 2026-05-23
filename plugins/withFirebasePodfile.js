@@ -1,0 +1,133 @@
+const { withDangerousMod } = require('expo/config-plugins');
+const fs = require('fs');
+const path = require('path');
+
+/**
+ * Expo config plugin for React Native Firebase iOS static frameworks.
+ *
+ * Keep this minimal to avoid brittle Podfile mutations across Expo/RN upgrades.
+ */
+module.exports = function withFirebasePodfile(config) {
+  return withDangerousMod(config, [
+    'ios',
+    async (config) => {
+      const podfilePath = path.join(config.modRequest.platformProjectRoot, 'Podfile');
+
+      let podfileContent = fs.readFileSync(podfilePath, 'utf8');
+
+      // Add Firebase static framework flag at the very top before any requires.
+      if (!podfileContent.includes('$RNFirebaseAsStaticFramework')) {
+        podfileContent = `# Firebase Static Framework - fixes Swift module issues
+$RNFirebaseAsStaticFramework = true
+
+` + podfileContent;
+      }
+
+      if (!podfileContent.includes('CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES')) {
+        const mapsWorkaround = `
+    # Disable script sandboxing for app target shell phases. CocoaPods resource
+    # scripts write temporary file lists under ios/Pods and can be blocked.
+    installer.aggregate_targets.each do |aggregate_target|
+      user_project = aggregate_target.user_project
+      next unless user_project
+
+      user_project.native_targets.each do |native_target|
+        native_target.build_configurations.each do |build_config|
+          build_config.build_settings['ENABLE_USER_SCRIPT_SANDBOXING'] = 'NO'
+        end
+      end
+
+      user_project.save
+    end
+
+    # Workaround: Xcode 26 strict modular header checks in static framework pods
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |build_config|
+        # Some pods (RNFirebase, etc.) import React headers and fail under framework modular checks.
+        build_config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+        build_config.build_settings['CLANG_ENABLE_EXPLICIT_MODULES'] = 'NO'
+        if build_config.name == 'Release'
+          # Ensure Release archives emit dSYMs so App Store symbol upload succeeds.
+          build_config.build_settings['DEBUG_INFORMATION_FORMAT'] = 'dwarf-with-dsym'
+          build_config.build_settings['GCC_GENERATE_DEBUGGING_SYMBOLS'] = 'YES'
+          build_config.build_settings['STRIP_INSTALLED_PRODUCT'] = 'NO'
+        end
+      end
+
+      if ['react-native-google-maps', 'react-native-maps'].include?(target.name)
+        target.build_configurations.each do |build_config|
+          # Keep modules enabled for Google Maps related headers used by this target.
+          build_config.build_settings['CLANG_ENABLE_MODULES'] = 'YES'
+          build_config.build_settings['CLANG_ENABLE_EXPLICIT_MODULES'] = 'NO'
+        end
+      end
+
+      if ['Google-Maps-iOS-Utils', 'GoogleMapsUtils'].include?(target.name)
+        target.build_configurations.each do |build_config|
+          # Keep modules enabled for @import GoogleMaps used by Google-Maps-iOS-Utils.
+          build_config.build_settings['CLANG_ENABLE_MODULES'] = 'YES'
+          build_config.build_settings['CLANG_ENABLE_EXPLICIT_MODULES'] = 'NO'
+        end
+      end
+    end
+
+    # Safety patch: avoid @import failure if a future config disables modules.
+    gmu_header = File.join(
+      installer.sandbox.root.to_s,
+      'Google-Maps-iOS-Utils',
+      'Sources',
+      'GoogleMapsUtilsObjC',
+      'include',
+      'GMUWeightedLatLng.h'
+    )
+    if File.exist?(gmu_header)
+      gmu_content = File.read(gmu_header)
+      patched = gmu_content.gsub('@import GoogleMaps;', '#import <GoogleMaps/GoogleMaps.h>')
+      File.write(gmu_header, patched) if patched != gmu_content
+    end
+
+    # Xcode 26 strict module checks: keep this header chained through
+    # AIRMapCalloutManager instead of direct React/RCTViewManager import.
+    rn_maps_marker_header = File.join(
+      __dir__,
+      '..',
+      'node_modules',
+      'react-native-maps',
+      'ios',
+      'AirGoogleMaps',
+      'AIRGoogleMapMarkerManager.h'
+    )
+    if File.exist?(rn_maps_marker_header)
+      marker_content = File.read(rn_maps_marker_header)
+      marker_patched = marker_content.gsub(
+        '#import <React/RCTViewManager.h>',
+        '#import "AIRMapCalloutManager.h"'
+      )
+      File.write(rn_maps_marker_header, marker_patched) if marker_patched != marker_content
+    end
+`;
+
+        let nextContent = podfileContent.replace(
+          /\n  end\s*\nend\s*$/,
+          `${mapsWorkaround}\n  end\nend\n`
+        );
+
+        // Fallback in case Podfile shape changes in a future Expo template.
+        if (nextContent === podfileContent) {
+          nextContent = podfileContent.replace(
+            /(post_install do \|installer\|[\s\S]*?)\n  end/m,
+            `$1${mapsWorkaround}\n  end`
+          );
+        }
+
+        podfileContent = nextContent;
+      }
+
+      fs.writeFileSync(podfilePath, podfileContent);
+
+      console.log('✅ Firebase + iOS Podfile workarounds applied');
+
+      return config;
+    },
+  ]);
+};
