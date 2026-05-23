@@ -207,14 +207,14 @@ module.exports = {
       gitCommitShort: GIT_COMMIT_SHORT,
       ortAndroidVersion: ORT_ANDROID_VERSION,
       eas: {
-        projectId: "62bbc6f8-257a-48e8-adb8-0b80558e3e92"
+        projectId: "91968462-70e8-4d0f-8d65-18ba53aea536"
       }
     },
     owner: "albertfast",
     runtimeVersion: RUNTIME_VERSION,
     updates: {
       enabled: true,
-      url: "https://u.expo.dev/62bbc6f8-257a-48e8-adb8-0b80558e3e92",
+      url: "https://u.expo.dev/91968462-70e8-4d0f-8d65-18ba53aea536",
       checkAutomatically: "ON_ERROR_RECOVERY",
       fallbackToCacheTimeout: 0,
       assetPatternsToBeBundled: [

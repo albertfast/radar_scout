@@ -35,12 +35,18 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
+          <string>com.googleusercontent.apps.1067370631256-adpbvk3cj52rm0p50iho5q1an6q34is3</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
           <string>exp+radar-scout</string>
         </array>
       </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>1779530142773</string>
+    <string>1779556894795</string>
     <key>GMSApiKey</key>
     <string>AIzaSyAtZoFF2DvstwmZuLxh0JR2CsK3clsYtbQ</string>
     <key>ITSAppUsesNonExemptEncryption</key>

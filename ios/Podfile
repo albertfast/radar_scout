@@ -44,7 +44,7 @@ def radar_scout_patch_xcconfig_setting(path, key, value)
     if content.match?(/^#{escaped_key}\s*=/)
       content.gsub(/^#{escaped_key}\s*=.*$/, "#{key} = #{value}")
     else
-      content.end_with?("\n") ? "#{content}#{key} = #{value}\n" : "#{content}\n#{key} = #{value}\n"
+      content.end_with?("post_install do |installer|\n    radar_scout_apply_fmt_workaround(installer)\n") ? "#{content}#{key} = #{value}\n" : "#{content}\n#{key} = #{value}\n"
     end
   File.write(path, patched) if patched != content
 end
@@ -58,6 +58,30 @@ def radar_scout_apply_fmt_workaround(installer)
     content = File.read(fmt_base_h)
     content = content.gsub(/#\s*define FMT_CONSTEVAL consteval/, '# define FMT_CONSTEVAL')
     File.write(fmt_base_h, content)
+    # Disable new architecture for lottie-react-native due to incomplete codegen support
+    installer.pods_project.targets.each do |target|
+      if target.name == 'lottie-react-native'
+        target.build_configurations.each do |config|
+          config.build_settings['RCT_NEW_ARCH_ENABLED'] = 'NO'
+        end
+      end
+    end
+
+    react_codegen_target = installer.pods_project.targets.find { |target| target.name == 'ReactCodegen' }
+    if react_codegen_target
+      phase_name = '[RadarScout] Patch Fabric component provider'
+      phase = react_codegen_target.shell_script_build_phases.find { |build_phase| build_phase.name == phase_name }
+      phase ||= react_codegen_target.new_shell_script_build_phase(phase_name)
+      phase.shell_script = 'set -e; if [[ -f "$PODS_ROOT/../.xcode.env" ]]; then source "$PODS_ROOT/../.xcode.env"; fi; if [[ -f "$PODS_ROOT/../.xcode.env.local" ]]; then source "$PODS_ROOT/../.xcode.env.local"; fi; export NODE_BINARY=${NODE_BINARY:-node}; SCRIPT="${PODS_ROOT}/../../scripts/patch-ios-third-party-components-provider.js"; if [ -f "$SCRIPT" ]; then "$NODE_BINARY" "$SCRIPT"; fi'
+      phase.always_out_of_date = '1' if phase.respond_to?(:always_out_of_date=)
+
+      react_codegen_target.build_phases.delete(phase)
+      source_phase_index = react_codegen_target.build_phases.index(react_codegen_target.source_build_phase) || react_codegen_target.build_phases.length
+      react_codegen_target.build_phases.insert(source_phase_index, phase)
+    end
+
+    system('node', File.join(__dir__, '..', 'scripts', 'patch-ios-third-party-components-provider.js'))
+
   end
 
   fmt_target = installer.pods_project.targets.find { |target| target.name == 'fmt' }
@@ -131,7 +155,6 @@ target 'RadarScout' do
       :mac_catalyst_enabled => false,
       :ccache_enabled => ccache_enabled?(podfile_properties),
     )
-    radar_scout_apply_fmt_workaround(installer)
     # Disable script sandboxing for app target shell phases. CocoaPods resource
     # scripts write temporary file lists under ios/Pods and can be blocked.
     installer.aggregate_targets.each do |aggregate_target|
@@ -212,30 +235,6 @@ target 'RadarScout' do
       )
       File.write(rn_maps_marker_header, marker_patched) if marker_patched != marker_content
     end
-
-    # Disable new architecture for lottie-react-native due to incomplete codegen support
-    installer.pods_project.targets.each do |target|
-      if target.name == 'lottie-react-native'
-        target.build_configurations.each do |config|
-          config.build_settings['RCT_NEW_ARCH_ENABLED'] = 'NO'
-        end
-      end
-    end
-
-    react_codegen_target = installer.pods_project.targets.find { |target| target.name == 'ReactCodegen' }
-    if react_codegen_target
-      phase_name = '[RadarScout] Patch Fabric component provider'
-      phase = react_codegen_target.shell_script_build_phases.find { |build_phase| build_phase.name == phase_name }
-      phase ||= react_codegen_target.new_shell_script_build_phase(phase_name)
-      phase.shell_script = 'set -e; if [[ -f "$PODS_ROOT/../.xcode.env" ]]; then source "$PODS_ROOT/../.xcode.env"; fi; if [[ -f "$PODS_ROOT/../.xcode.env.local" ]]; then source "$PODS_ROOT/../.xcode.env.local"; fi; export NODE_BINARY=${NODE_BINARY:-node}; SCRIPT="${PODS_ROOT}/../../scripts/patch-ios-third-party-components-provider.js"; if [ -f "$SCRIPT" ]; then "$NODE_BINARY" "$SCRIPT"; fi'
-      phase.always_out_of_date = '1' if phase.respond_to?(:always_out_of_date=)
-
-      react_codegen_target.build_phases.delete(phase)
-      source_phase_index = react_codegen_target.build_phases.index(react_codegen_target.source_build_phase) || react_codegen_target.build_phases.length
-      react_codegen_target.build_phases.insert(source_phase_index, phase)
-    end
-
-    system('node', File.join(__dir__, '..', 'scripts', 'patch-ios-third-party-components-provider.js'))
 
   end
 end

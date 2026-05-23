@@ -178,6 +178,7 @@ const RC_ENV_PACKAGE_IDS: Record<RevenueCatPlanPreference, string> = {
 
 const RC_COMPAT_PRODUCT_IDS: Record<RevenueCatPlanPreference, string[]> = {
   weekly: [
+    'weekly1',
     'pro_subscription:weekly',
     'weekly',
     'rc_weekly',
@@ -187,6 +188,7 @@ const RC_COMPAT_PRODUCT_IDS: Record<RevenueCatPlanPreference, string[]> = {
     'premium_subscription_weekly',
   ],
   yearly: [
+    'monthly1',
     'pro_subscription:yearly',
     'yearly',
     'annual',
@@ -197,6 +199,7 @@ const RC_COMPAT_PRODUCT_IDS: Record<RevenueCatPlanPreference, string[]> = {
     'premium_subscription_yearly',
   ],
   adfree: [
+    'ads_remove',
     'remove_advertisement',
     'adfree',
     'ad_free',
