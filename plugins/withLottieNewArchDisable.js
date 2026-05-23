@@ -24,7 +24,7 @@ module.exports = function withLottieNewArchDisable(config) {
     // Check if we already have this patch
     if (!contents.includes('Disable new architecture for lottie-react-native')) {
       // Find the post_install block and add our patch before the end
-      const postInstallMatch = contents.match(/post_install do \|installer\|[\s\S]*?^  end$/m);
+      const postInstallMatch = contents.match(/^post_install do \|installer\|[\s\S]*?^  end$/m);
       
       if (postInstallMatch) {
         // Insert our code before the final 'end' of post_install
@@ -47,7 +47,7 @@ module.exports = function withLottieNewArchDisable(config) {
     }
 
     if (!contents.includes('[RadarScout] Patch Fabric component provider')) {
-      const postInstallMatch = contents.match(/post_install do \|installer\|[\s\S]*?^  end$/m);
+      const postInstallMatch = contents.match(/^post_install do \|installer\|[\s\S]*?^  end$/m);
       if (postInstallMatch) {
         const postInstallBlock = postInstallMatch[0];
         const directPatchCall = contents.includes('patch-ios-third-party-components-provider.js')

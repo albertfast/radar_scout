@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 100;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -23,7 +23,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = RadarScout/Info.plist; sourceTree = "<group>"; };
 		600DD57885BED8D334C68DFC /* Pods-RadarScout.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RadarScout.release.xcconfig"; path = "Target Support Files/Pods-RadarScout/Pods-RadarScout.release.xcconfig"; sourceTree = "<group>"; };
 		64BA56E579461595F5334DD1 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-RadarScout/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		6F8A31A012F4B6214F9179C3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = RadarScout/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		6F8A31A012F4B6214F9179C3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = RadarScout/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		8657C15D3A2B353E4D6C79E0 /* Pods-RadarScout.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RadarScout.debug.xcconfig"; path = "Target Support Files/Pods-RadarScout/Pods-RadarScout.debug.xcconfig"; sourceTree = "<group>"; };
 		86CE7FC57D29F8CA2EAAFE3E /* Pods_RadarScout.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RadarScout.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = RadarScout/SplashScreen.storyboard; sourceTree = "<group>"; };
@@ -37,11 +37,9 @@
 /* Begin PBXFrameworksBuildPhase section */
 		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				CDC2BB6680B5515CB12BAEA8 /* Pods_RadarScout.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -52,7 +50,6 @@
 				8657C15D3A2B353E4D6C79E0 /* Pods-RadarScout.debug.xcconfig */,
 				600DD57885BED8D334C68DFC /* Pods-RadarScout.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -156,8 +153,6 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			name = RadarScout;
 			productName = RadarScout;
 			productReference = 13B07F961A680F5B00A75B9A /* RadarScout.app */;
@@ -177,7 +172,6 @@
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "RadarScout" */;
-			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -185,6 +179,10 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
+			packageReferences = (
+				D29605FD2FC2410000D30A8D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
+			preferredProjectObjectVersion = 100;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -197,7 +195,6 @@
 /* Begin PBXResourcesBuildPhase section */
 		13B07F8E1A680F5B00A75B9A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
@@ -205,7 +202,6 @@
 				3E4CBED01DC54B63B50DD074 /* GoogleService-Info.plist in Resources */,
 				C61DE1873968C70166EB50E8 /* PrivacyInfo.xcprivacy in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
@@ -213,87 +209,628 @@
 		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
 			inputPaths = (
 				"$(SRCROOT)/.xcode.env",
 				"$(SRCROOT)/.xcode.env.local",
 			);
 			name = "Bundle React Native code and images";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [[ -f \"$PODS_ROOT/../.xcode.env\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env\"\nfi\nif [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.local\"\nfi\n\n# The project root by default is one level up from the ios directory\nexport PROJECT_ROOT=\"$PROJECT_DIR\"/..\n\nif [[ \"$CONFIGURATION\" = *Debug* ]]; then\n  export SKIP_BUNDLING=1\nfi\nif [[ -z \"$ENTRY_FILE\" ]]; then\n  # Set the entry JS file using the bundler's entry resolution.\n  export ENTRY_FILE=\"$(\"$NODE_BINARY\" -e \"require('expo/scripts/resolveAppEntry')\" \"$PROJECT_ROOT\" ios absolute | tail -n 1)\"\nfi\n\nif [[ -z \"$CLI_PATH\" ]]; then\n  # Use Expo CLI\n  export CLI_PATH=\"$(\"$NODE_BINARY\" --print \"require.resolve('@expo/cli', { paths: [require.resolve('expo/package.json')] })\")\"\nfi\nif [[ -z \"$BUNDLE_COMMAND\" ]]; then\n  # Default Expo CLI command for bundling\n  export BUNDLE_COMMAND=\"export:embed\"\nfi\n\n# Source .xcode.env.updates if it exists to allow\n# SKIP_BUNDLING to be unset if needed\nif [[ -f \"$PODS_ROOT/../.xcode.env.updates\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.updates\"\nfi\n# Source local changes to allow overrides\n# if needed\nif [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.local\"\nfi\n\n`\"$NODE_BINARY\" --print \"require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/react-native-xcode.sh'\"`\n\n";
+			shellScript = (
+				"if [[ -f \"$PODS_ROOT/../.xcode.env\" ]]; then",
+				"  source \"$PODS_ROOT/../.xcode.env\"",
+				"fi",
+				"if [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then",
+				"  source \"$PODS_ROOT/../.xcode.env.local\"",
+				"fi",
+				"",
+				"# The project root by default is one level up from the ios directory",
+				"export PROJECT_ROOT=\"$PROJECT_DIR\"/..",
+				"",
+				"if [[ \"$CONFIGURATION\" = *Debug* ]]; then",
+				"  export SKIP_BUNDLING=1",
+				"fi",
+				"if [[ -z \"$ENTRY_FILE\" ]]; then",
+				"  # Set the entry JS file using the bundler's entry resolution.",
+				"  export ENTRY_FILE=\"$(\"$NODE_BINARY\" -e \"require('expo/scripts/resolveAppEntry')\" \"$PROJECT_ROOT\" ios absolute | tail -n 1)\"",
+				"fi",
+				"",
+				"if [[ -z \"$CLI_PATH\" ]]; then",
+				"  # Use Expo CLI",
+				"  export CLI_PATH=\"$(\"$NODE_BINARY\" --print \"require.resolve('@expo/cli', { paths: [require.resolve('expo/package.json')] })\")\"",
+				"fi",
+				"if [[ -z \"$BUNDLE_COMMAND\" ]]; then",
+				"  # Default Expo CLI command for bundling",
+				"  export BUNDLE_COMMAND=\"export:embed\"",
+				"fi",
+				"",
+				"# Source .xcode.env.updates if it exists to allow",
+				"# SKIP_BUNDLING to be unset if needed",
+				"if [[ -f \"$PODS_ROOT/../.xcode.env.updates\" ]]; then",
+				"  source \"$PODS_ROOT/../.xcode.env.updates\"",
+				"fi",
+				"# Source local changes to allow overrides",
+				"# if needed",
+				"if [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then",
+				"  source \"$PODS_ROOT/../.xcode.env.local\"",
+				"fi",
+				"",
+				"`\"$NODE_BINARY\" --print \"require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/react-native-xcode.sh'\"`",
+				"",
+				"",
+			);
 		};
 		0558D8C1D4DEDD149E11A5FF /* [CP-User] [RNFB] Crashlytics Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
 			inputPaths = (
 				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
 				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
 			);
 			name = "[CP-User] [RNFB] Crashlytics Configuration";
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/usr/bin/env bash\n#\n# Copyright (c) 2016-present Invertase Limited & Contributors\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this library except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#   http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n#\nset -e\n\nif [[ ${PODS_ROOT} ]]; then\n  echo \"info: Exec FirebaseCrashlytics Run from Pods\"\n  \"${PODS_ROOT}/FirebaseCrashlytics/run\"\nelse\n  echo \"info: Exec FirebaseCrashlytics Run from framework\"\n  \"${PROJECT_DIR}/FirebaseCrashlytics.framework/run\"\nfi\n";
+			shellScript = (
+				"#!/usr/bin/env bash",
+				"#",
+				"# Copyright (c) 2016-present Invertase Limited & Contributors",
+				"#",
+				"# Licensed under the Apache License, Version 2.0 (the \"License\");",
+				"# you may not use this library except in compliance with the License.",
+				"# You may obtain a copy of the License at",
+				"#",
+				"#   http://www.apache.org/licenses/LICENSE-2.0",
+				"#",
+				"# Unless required by applicable law or agreed to in writing, software",
+				"# distributed under the License is distributed on an \"AS IS\" BASIS,",
+				"# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.",
+				"# See the License for the specific language governing permissions and",
+				"# limitations under the License.",
+				"#",
+				"set -e",
+				"",
+				"if [[ ${PODS_ROOT} ]]; then",
+				"  echo \"info: Exec FirebaseCrashlytics Run from Pods\"",
+				"  \"${PODS_ROOT}/FirebaseCrashlytics/run\"",
+				"else",
+				"  echo \"info: Exec FirebaseCrashlytics Run from framework\"",
+				"  \"${PROJECT_DIR}/FirebaseCrashlytics.framework/run\"",
+				"fi",
+				"",
+			);
 		};
 		05F4D41722EF6A5619FB0775 /* [CP-User] [RNFB] Core Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
 			inputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
 			);
 			name = "[CP-User] [RNFB] Core Configuration";
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/usr/bin/env bash\n#\n# Copyright (c) 2016-present Invertase Limited & Contributors\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this library except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#   http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n#\n\n##########################################################################\n##########################################################################\n#\n#  NOTE THAT IF YOU CHANGE THIS FILE YOU MUST RUN pod install AFTERWARDS\n#\n#  This file is installed as an Xcode build script in the project file\n#  by cocoapods, and you will not see your changes until you pod install\n#\n##########################################################################\n##########################################################################\n\nset -e\n\n_MAX_LOOKUPS=2;\n_SEARCH_RESULT=''\n_RN_ROOT_EXISTS=''\n_CURRENT_LOOKUPS=1\n_JSON_ROOT=\"'react-native'\"\n_JSON_FILE_NAME='firebase.json'\n_JSON_OUTPUT_BASE64='e30=' # { }\n_CURRENT_SEARCH_DIR=${PROJECT_DIR}\n_PLIST_BUDDY=/usr/libexec/PlistBuddy\n_TARGET_PLIST=\"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"\n_DSYM_PLIST=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n# plist arrays\n_PLIST_ENTRY_KEYS=()\n_PLIST_ENTRY_TYPES=()\n_PLIST_ENTRY_VALUES=()\n\nfunction setPlistValue {\n  echo \"note:      setting plist entry '$1' of type '$2' in file '$4'\"\n  ${_PLIST_BUDDY} -c \"Add :$1 $2 '$3'\" $4 || echo \"note:      '$1' already exists\"\n}\n\nfunction getFirebaseJsonKeyValue () {\n  if [[ ${_RN_ROOT_EXISTS} ]]; then\n    ruby -Ku -e \"require 'rubygems';require 'json'; output=JSON.parse('$1'); puts output[$_JSON_ROOT]['$2']\"\n  else\n    echo \"\"\n  fi;\n}\n\nfunction jsonBoolToYesNo () {\n  if [[ $1 == \"false\" ]]; then\n    echo \"NO\"\n  elif [[ $1 == \"true\" ]]; then\n    echo \"YES\"\n  else echo \"NO\"\n  fi\n}\n\necho \"note: -> RNFB build script started\"\necho \"note: 1) Locating ${_JSON_FILE_NAME} file:\"\n\nif [[ -z ${_CURRENT_SEARCH_DIR} ]]; then\n  _CURRENT_SEARCH_DIR=$(pwd)\nfi;\n\nwhile true; do\n  _CURRENT_SEARCH_DIR=$(dirname \"$_CURRENT_SEARCH_DIR\")\n  if [[ \"$_CURRENT_SEARCH_DIR\" == \"/\" ]] || [[ ${_CURRENT_LOOKUPS} -gt ${_MAX_LOOKUPS} ]]; then break; fi;\n  echo \"note:      ($_CURRENT_LOOKUPS of $_MAX_LOOKUPS) Searching in '$_CURRENT_SEARCH_DIR' for a ${_JSON_FILE_NAME} file.\"\n  _SEARCH_RESULT=$(find \"$_CURRENT_SEARCH_DIR\" -maxdepth 2 -name ${_JSON_FILE_NAME} -print | /usr/bin/head -n 1)\n  if [[ ${_SEARCH_RESULT} ]]; then\n    echo \"note:      ${_JSON_FILE_NAME} found at $_SEARCH_RESULT\"\n    break;\n  fi;\n  _CURRENT_LOOKUPS=$((_CURRENT_LOOKUPS+1))\ndone\n\nif [[ ${_SEARCH_RESULT} ]]; then\n  _JSON_OUTPUT_RAW=$(cat \"${_SEARCH_RESULT}\")\n  if ! _RN_ROOT_EXISTS=$(ruby -Ku -e \"require 'json'; output=JSON.parse('$_JSON_OUTPUT_RAW'); puts output[$_JSON_ROOT]\"); then\n    echo \"error: Failed to parse firebase.json, check for syntax errors.\"\n    exit 1\n  fi\n\n  if [[ ${_RN_ROOT_EXISTS} ]]; then\n    if ! python3 --version >/dev/null 2>&1; then echo \"error: python3 not found, firebase.json file processing error.\" && exit 1; fi\n    _JSON_OUTPUT_BASE64=$(python3 -c 'import json,sys,base64;print(base64.b64encode(bytes(json.dumps(json.loads(open('\"'${_SEARCH_RESULT}'\"', '\"'rb'\"').read())['${_JSON_ROOT}']), '\"'utf-8'\"')).decode())' || echo \"e30=\")\n  fi\n\n  _PLIST_ENTRY_KEYS+=(\"firebase_json_raw\")\n  _PLIST_ENTRY_TYPES+=(\"string\")\n  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")\n\n  # config.app_data_collection_default_enabled\n  _APP_DATA_COLLECTION_ENABLED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"app_data_collection_default_enabled\")\n  if [[ $_APP_DATA_COLLECTION_ENABLED ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseDataCollectionDefaultEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_APP_DATA_COLLECTION_ENABLED\")\")\n  fi\n\n  # config.analytics_auto_collection_enabled\n  _ANALYTICS_AUTO_COLLECTION=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_auto_collection_enabled\")\n  if [[ $_ANALYTICS_AUTO_COLLECTION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FIREBASE_ANALYTICS_COLLECTION_ENABLED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AUTO_COLLECTION\")\")\n  fi\n\n  # config.analytics_collection_deactivated\n  _ANALYTICS_DEACTIVATED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_collection_deactivated\")\n  if [[ $_ANALYTICS_DEACTIVATED ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_DEACTIVATED\")\")\n  fi\n\n  # config.analytics_idfv_collection_enabled\n  _ANALYTICS_IDFV_COLLECTION=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_idfv_collection_enabled\")\n  if [[ $_ANALYTICS_IDFV_COLLECTION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_IDFV_COLLECTION_ENABLED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_IDFV_COLLECTION\")\")\n  fi\n\n  # config.analytics_default_allow_analytics_storage\n  _ANALYTICS_STORAGE=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_default_allow_analytics_storage\")\n  if [[ $_ANALYTICS_STORAGE ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_ANALYTICS_STORAGE\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_STORAGE\")\")\n  fi\n\n  # config.analytics_default_allow_ad_storage\n  _ANALYTICS_AD_STORAGE=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_default_allow_ad_storage\")\n  if [[ $_ANALYTICS_AD_STORAGE ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_STORAGE\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AD_STORAGE\")\")\n  fi\n\n  # config.analytics_default_allow_ad_user_data\n  _ANALYTICS_AD_USER_DATA=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_default_allow_ad_user_data\")\n  if [[ $_ANALYTICS_AD_USER_DATA ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_USER_DATA\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AD_USER_DATA\")\")\n  fi\n\n  # config.analytics_default_allow_ad_personalization_signals\n  _ANALYTICS_PERSONALIZATION=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_default_allow_ad_personalization_signals\")\n  if [[ $_ANALYTICS_PERSONALIZATION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_PERSONALIZATION\")\")\n  fi\n\n  # config.analytics_registration_with_ad_network_enabled\n  _ANALYTICS_REGISTRATION_WITH_AD_NETWORK=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"google_analytics_registration_with_ad_network_enabled\")\n  if [[ $_ANALYTICS_REGISTRATION_WITH_AD_NETWORK ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_REGISTRATION_WITH_AD_NETWORK_ENABLED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_REGISTRATION_WITH_AD_NETWORK\")\")\n  fi\n\n  # config.google_analytics_automatic_screen_reporting_enabled\n  _ANALYTICS_AUTO_SCREEN_REPORTING=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"google_analytics_automatic_screen_reporting_enabled\")\n  if [[ $_ANALYTICS_AUTO_SCREEN_REPORTING ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseAutomaticScreenReportingEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AUTO_SCREEN_REPORTING\")\")\n  fi\n\n  # config.perf_auto_collection_enabled\n  _PERF_AUTO_COLLECTION=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"perf_auto_collection_enabled\")\n  if [[ $_PERF_AUTO_COLLECTION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"firebase_performance_collection_enabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_PERF_AUTO_COLLECTION\")\")\n  fi\n\n  # config.perf_collection_deactivated\n  _PERF_DEACTIVATED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"perf_collection_deactivated\")\n  if [[ $_PERF_DEACTIVATED ]]; then\n    _PLIST_ENTRY_KEYS+=(\"firebase_performance_collection_deactivated\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_PERF_DEACTIVATED\")\")\n  fi\n\n  # config.messaging_auto_init_enabled\n  _MESSAGING_AUTO_INIT=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"messaging_auto_init_enabled\")\n  if [[ $_MESSAGING_AUTO_INIT ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseMessagingAutoInitEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_MESSAGING_AUTO_INIT\")\")\n  fi\n\n  # config.in_app_messaging_auto_colllection_enabled\n  _FIAM_AUTO_INIT=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"in_app_messaging_auto_collection_enabled\")\n  if [[ $_FIAM_AUTO_INIT ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseInAppMessagingAutomaticDataCollectionEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_FIAM_AUTO_INIT\")\")\n  fi\n\n  # config.app_check_token_auto_refresh\n  _APP_CHECK_TOKEN_AUTO_REFRESH=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"app_check_token_auto_refresh\")\n  if [[ $_APP_CHECK_TOKEN_AUTO_REFRESH ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseAppCheckTokenAutoRefreshEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_APP_CHECK_TOKEN_AUTO_REFRESH\")\")\n  fi\n\n  # config.crashlytics_disable_auto_disabler - undocumented for now - mainly for debugging, document if becomes useful\n  _CRASHLYTICS_AUTO_DISABLE_ENABLED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"crashlytics_disable_auto_disabler\")\n  if [[ $_CRASHLYTICS_AUTO_DISABLE_ENABLED == \"true\" ]]; then\n    echo \"Disabled Crashlytics auto disabler.\" # do nothing\n  else\n    _PLIST_ENTRY_KEYS+=(\"FirebaseCrashlyticsCollectionEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"NO\")\n  fi\nelse\n  _PLIST_ENTRY_KEYS+=(\"firebase_json_raw\")\n  _PLIST_ENTRY_TYPES+=(\"string\")\n  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")\n  echo \"warning:   A firebase.json file was not found, whilst this file is optional it is recommended to include it to configure firebase services in React Native Firebase.\"\nfi;\n\necho \"note: 2) Injecting Info.plist entries: \"\n\n# Log out the keys we're adding\nfor i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do\n  echo \"    ->  $i) ${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\"\ndone\n\nfor plist in \"${_TARGET_PLIST}\" \"${_DSYM_PLIST}\" ; do\n  if [[ -f \"${plist}\" ]]; then\n\n    # paths with spaces break the call to setPlistValue. temporarily modify\n    # the shell internal field separator variable (IFS), which normally\n    # includes spaces, to consist only of line breaks\n    oldifs=$IFS\n    IFS=\"\n\"\n\n    for i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do\n      setPlistValue \"${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\" \"${plist}\"\n    done\n\n    # restore the original internal field separator value\n    IFS=$oldifs\n  else\n    echo \"warning:   A Info.plist build output file was not found (${plist})\"\n  fi\ndone\n\necho \"note: <- RNFB build script finished\"\n";
+			shellScript = (
+				"#!/usr/bin/env bash",
+				"#",
+				"# Copyright (c) 2016-present Invertase Limited & Contributors",
+				"#",
+				"# Licensed under the Apache License, Version 2.0 (the \"License\");",
+				"# you may not use this library except in compliance with the License.",
+				"# You may obtain a copy of the License at",
+				"#",
+				"#   http://www.apache.org/licenses/LICENSE-2.0",
+				"#",
+				"# Unless required by applicable law or agreed to in writing, software",
+				"# distributed under the License is distributed on an \"AS IS\" BASIS,",
+				"# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.",
+				"# See the License for the specific language governing permissions and",
+				"# limitations under the License.",
+				"#",
+				"",
+				"##########################################################################",
+				"##########################################################################",
+				"#",
+				"#  NOTE THAT IF YOU CHANGE THIS FILE YOU MUST RUN pod install AFTERWARDS",
+				"#",
+				"#  This file is installed as an Xcode build script in the project file",
+				"#  by cocoapods, and you will not see your changes until you pod install",
+				"#",
+				"##########################################################################",
+				"##########################################################################",
+				"",
+				"set -e",
+				"",
+				"_MAX_LOOKUPS=2;",
+				"_SEARCH_RESULT=''",
+				"_RN_ROOT_EXISTS=''",
+				"_CURRENT_LOOKUPS=1",
+				"_JSON_ROOT=\"'react-native'\"",
+				"_JSON_FILE_NAME='firebase.json'",
+				"_JSON_OUTPUT_BASE64='e30=' # { }",
+				"_CURRENT_SEARCH_DIR=${PROJECT_DIR}",
+				"_PLIST_BUDDY=/usr/libexec/PlistBuddy",
+				"_TARGET_PLIST=\"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"",
+				"_DSYM_PLIST=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"",
+				"",
+				"# plist arrays",
+				"_PLIST_ENTRY_KEYS=()",
+				"_PLIST_ENTRY_TYPES=()",
+				"_PLIST_ENTRY_VALUES=()",
+				"",
+				"function setPlistValue {",
+				"  echo \"note:      setting plist entry '$1' of type '$2' in file '$4'\"",
+				"  ${_PLIST_BUDDY} -c \"Add :$1 $2 '$3'\" $4 || echo \"note:      '$1' already exists\"",
+				"}",
+				"",
+				"function getFirebaseJsonKeyValue () {",
+				"  if [[ ${_RN_ROOT_EXISTS} ]]; then",
+				"    ruby -Ku -e \"require 'rubygems';require 'json'; output=JSON.parse('$1'); puts output[$_JSON_ROOT]['$2']\"",
+				"  else",
+				"    echo \"\"",
+				"  fi;",
+				"}",
+				"",
+				"function jsonBoolToYesNo () {",
+				"  if [[ $1 == \"false\" ]]; then",
+				"    echo \"NO\"",
+				"  elif [[ $1 == \"true\" ]]; then",
+				"    echo \"YES\"",
+				"  else echo \"NO\"",
+				"  fi",
+				"}",
+				"",
+				"echo \"note: -> RNFB build script started\"",
+				"echo \"note: 1) Locating ${_JSON_FILE_NAME} file:\"",
+				"",
+				"if [[ -z ${_CURRENT_SEARCH_DIR} ]]; then",
+				"  _CURRENT_SEARCH_DIR=$(pwd)",
+				"fi;",
+				"",
+				"while true; do",
+				"  _CURRENT_SEARCH_DIR=$(dirname \"$_CURRENT_SEARCH_DIR\")",
+				"  if [[ \"$_CURRENT_SEARCH_DIR\" == \"/\" ]] || [[ ${_CURRENT_LOOKUPS} -gt ${_MAX_LOOKUPS} ]]; then break; fi;",
+				"  echo \"note:      ($_CURRENT_LOOKUPS of $_MAX_LOOKUPS) Searching in '$_CURRENT_SEARCH_DIR' for a ${_JSON_FILE_NAME} file.\"",
+				"  _SEARCH_RESULT=$(find \"$_CURRENT_SEARCH_DIR\" -maxdepth 2 -name ${_JSON_FILE_NAME} -print | /usr/bin/head -n 1)",
+				"  if [[ ${_SEARCH_RESULT} ]]; then",
+				"    echo \"note:      ${_JSON_FILE_NAME} found at $_SEARCH_RESULT\"",
+				"    break;",
+				"  fi;",
+				"  _CURRENT_LOOKUPS=$((_CURRENT_LOOKUPS+1))",
+				"done",
+				"",
+				"if [[ ${_SEARCH_RESULT} ]]; then",
+				"  _JSON_OUTPUT_RAW=$(cat \"${_SEARCH_RESULT}\")",
+				"  if ! _RN_ROOT_EXISTS=$(ruby -Ku -e \"require 'json'; output=JSON.parse('$_JSON_OUTPUT_RAW'); puts output[$_JSON_ROOT]\"); then",
+				"    echo \"error: Failed to parse firebase.json, check for syntax errors.\"",
+				"    exit 1",
+				"  fi",
+				"",
+				"  if [[ ${_RN_ROOT_EXISTS} ]]; then",
+				"    if ! python3 --version >/dev/null 2>&1; then echo \"error: python3 not found, firebase.json file processing error.\" && exit 1; fi",
+				"    _JSON_OUTPUT_BASE64=$(python3 -c 'import json,sys,base64;print(base64.b64encode(bytes(json.dumps(json.loads(open('\"'${_SEARCH_RESULT}'\"', '\"'rb'\"').read())['${_JSON_ROOT}']), '\"'utf-8'\"')).decode())' || echo \"e30=\")",
+				"  fi",
+				"",
+				"  _PLIST_ENTRY_KEYS+=(\"firebase_json_raw\")",
+				"  _PLIST_ENTRY_TYPES+=(\"string\")",
+				"  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")",
+				"",
+				"  # config.app_data_collection_default_enabled",
+				"  _APP_DATA_COLLECTION_ENABLED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"app_data_collection_default_enabled\")",
+				"  if [[ $_APP_DATA_COLLECTION_ENABLED ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"FirebaseDataCollectionDefaultEnabled\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_APP_DATA_COLLECTION_ENABLED\")\")",
+				"  fi",
+				"",
+				"  # config.analytics_auto_collection_enabled",
+				"  _ANALYTICS_AUTO_COLLECTION=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_auto_collection_enabled\")",
+				"  if [[ $_ANALYTICS_AUTO_COLLECTION ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"FIREBASE_ANALYTICS_COLLECTION_ENABLED\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AUTO_COLLECTION\")\")",
+				"  fi",
+				"",
+				"  # config.analytics_collection_deactivated",
+				"  _ANALYTICS_DEACTIVATED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_collection_deactivated\")",
+				"  if [[ $_ANALYTICS_DEACTIVATED ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_DEACTIVATED\")\")",
+				"  fi",
+				"",
+				"  # config.analytics_idfv_collection_enabled",
+				"  _ANALYTICS_IDFV_COLLECTION=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_idfv_collection_enabled\")",
+				"  if [[ $_ANALYTICS_IDFV_COLLECTION ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_IDFV_COLLECTION_ENABLED\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_IDFV_COLLECTION\")\")",
+				"  fi",
+				"",
+				"  # config.analytics_default_allow_analytics_storage",
+				"  _ANALYTICS_STORAGE=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_default_allow_analytics_storage\")",
+				"  if [[ $_ANALYTICS_STORAGE ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_ANALYTICS_STORAGE\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_STORAGE\")\")",
+				"  fi",
+				"",
+				"  # config.analytics_default_allow_ad_storage",
+				"  _ANALYTICS_AD_STORAGE=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_default_allow_ad_storage\")",
+				"  if [[ $_ANALYTICS_AD_STORAGE ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_STORAGE\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AD_STORAGE\")\")",
+				"  fi",
+				"",
+				"  # config.analytics_default_allow_ad_user_data",
+				"  _ANALYTICS_AD_USER_DATA=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_default_allow_ad_user_data\")",
+				"  if [[ $_ANALYTICS_AD_USER_DATA ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_USER_DATA\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AD_USER_DATA\")\")",
+				"  fi",
+				"",
+				"  # config.analytics_default_allow_ad_personalization_signals",
+				"  _ANALYTICS_PERSONALIZATION=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_default_allow_ad_personalization_signals\")",
+				"  if [[ $_ANALYTICS_PERSONALIZATION ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_PERSONALIZATION\")\")",
+				"  fi",
+				"",
+				"  # config.analytics_registration_with_ad_network_enabled",
+				"  _ANALYTICS_REGISTRATION_WITH_AD_NETWORK=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"google_analytics_registration_with_ad_network_enabled\")",
+				"  if [[ $_ANALYTICS_REGISTRATION_WITH_AD_NETWORK ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_REGISTRATION_WITH_AD_NETWORK_ENABLED\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_REGISTRATION_WITH_AD_NETWORK\")\")",
+				"  fi",
+				"",
+				"  # config.google_analytics_automatic_screen_reporting_enabled",
+				"  _ANALYTICS_AUTO_SCREEN_REPORTING=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"google_analytics_automatic_screen_reporting_enabled\")",
+				"  if [[ $_ANALYTICS_AUTO_SCREEN_REPORTING ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"FirebaseAutomaticScreenReportingEnabled\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AUTO_SCREEN_REPORTING\")\")",
+				"  fi",
+				"",
+				"  # config.perf_auto_collection_enabled",
+				"  _PERF_AUTO_COLLECTION=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"perf_auto_collection_enabled\")",
+				"  if [[ $_PERF_AUTO_COLLECTION ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"firebase_performance_collection_enabled\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_PERF_AUTO_COLLECTION\")\")",
+				"  fi",
+				"",
+				"  # config.perf_collection_deactivated",
+				"  _PERF_DEACTIVATED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"perf_collection_deactivated\")",
+				"  if [[ $_PERF_DEACTIVATED ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"firebase_performance_collection_deactivated\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_PERF_DEACTIVATED\")\")",
+				"  fi",
+				"",
+				"  # config.messaging_auto_init_enabled",
+				"  _MESSAGING_AUTO_INIT=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"messaging_auto_init_enabled\")",
+				"  if [[ $_MESSAGING_AUTO_INIT ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"FirebaseMessagingAutoInitEnabled\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_MESSAGING_AUTO_INIT\")\")",
+				"  fi",
+				"",
+				"  # config.in_app_messaging_auto_colllection_enabled",
+				"  _FIAM_AUTO_INIT=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"in_app_messaging_auto_collection_enabled\")",
+				"  if [[ $_FIAM_AUTO_INIT ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"FirebaseInAppMessagingAutomaticDataCollectionEnabled\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_FIAM_AUTO_INIT\")\")",
+				"  fi",
+				"",
+				"  # config.app_check_token_auto_refresh",
+				"  _APP_CHECK_TOKEN_AUTO_REFRESH=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"app_check_token_auto_refresh\")",
+				"  if [[ $_APP_CHECK_TOKEN_AUTO_REFRESH ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"FirebaseAppCheckTokenAutoRefreshEnabled\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_APP_CHECK_TOKEN_AUTO_REFRESH\")\")",
+				"  fi",
+				"",
+				"  # config.crashlytics_disable_auto_disabler - undocumented for now - mainly for debugging, document if becomes useful",
+				"  _CRASHLYTICS_AUTO_DISABLE_ENABLED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"crashlytics_disable_auto_disabler\")",
+				"  if [[ $_CRASHLYTICS_AUTO_DISABLE_ENABLED == \"true\" ]]; then",
+				"    echo \"Disabled Crashlytics auto disabler.\" # do nothing",
+				"  else",
+				"    _PLIST_ENTRY_KEYS+=(\"FirebaseCrashlyticsCollectionEnabled\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"NO\")",
+				"  fi",
+				"else",
+				"  _PLIST_ENTRY_KEYS+=(\"firebase_json_raw\")",
+				"  _PLIST_ENTRY_TYPES+=(\"string\")",
+				"  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")",
+				"  echo \"warning:   A firebase.json file was not found, whilst this file is optional it is recommended to include it to configure firebase services in React Native Firebase.\"",
+				"fi;",
+				"",
+				"echo \"note: 2) Injecting Info.plist entries: \"",
+				"",
+				"# Log out the keys we're adding",
+				"for i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do",
+				"  echo \"    ->  $i) ${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\"",
+				"done",
+				"",
+				"for plist in \"${_TARGET_PLIST}\" \"${_DSYM_PLIST}\" ; do",
+				"  if [[ -f \"${plist}\" ]]; then",
+				"",
+				"    # paths with spaces break the call to setPlistValue. temporarily modify",
+				"    # the shell internal field separator variable (IFS), which normally",
+				"    # includes spaces, to consist only of line breaks",
+				"    oldifs=$IFS",
+				"    IFS=\"",
+				"\"",
+				"",
+				"    for i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do",
+				"      setPlistValue \"${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\" \"${plist}\"",
+				"    done",
+				"",
+				"    # restore the original internal field separator value",
+				"    IFS=$oldifs",
+				"  else",
+				"    echo \"warning:   A Info.plist build output file was not found (${plist})\"",
+				"  fi",
+				"done",
+				"",
+				"echo \"note: <- RNFB build script finished\"",
+				"",
+			);
 		};
 		08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
 				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-RadarScout-checkManifestLockResult.txt",
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = (
+				"diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null",
+				"if [ $? != 0 ] ; then",
+				"    # print error to STDERR",
+				"    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2",
+				"    exit 1",
+				"fi",
+				"# This output is used by Xcode 'outputs' to avoid re-running this script phase.",
+				"echo \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"",
+				"",
+			);
 			showEnvVarsInLog = 0;
 		};
 		2FBA175B2489C4C0B230E473 /* [CP-User] [RNGoogleMobileAds] Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
 			inputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
 			);
 			name = "[CP-User] [RNGoogleMobileAds] Configuration";
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/usr/bin/env bash\n#\n# Copyright (c) 2016-present Invertase Limited & Contributors\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this library except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#   http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n#\n\n##########################################################################\n##########################################################################\n#\n#  NOTE THAT IF YOU CHANGE THIS FILE YOU MUST RUN pod install AFTERWARDS\n#\n#  This file is installed as an Xcode build script in the project file\n#  by cocoapods, and you will not see your changes until you pod install\n#\n##########################################################################\n##########################################################################\n\nset -e\n\nif [[ -f \"$PODS_ROOT/../.xcode.env\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env\"\nfi\nif [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.local\"\nfi\n\n_MAX_LOOKUPS=2;\n_SEARCH_RESULT=''\n_RN_ROOT_EXISTS=''\n_CURRENT_LOOKUPS=1\n_PROJECT_ABBREVIATION=\"RNGoogleMobileAds\"\n_JSON_ROOT=\"'react-native-google-mobile-ads'\"\n_JSON_FILE_NAME='app.json'\n_JS_APP_CONFIG_FILE_NAME='app.config.js'\n_JSON_OUTPUT_BASE64='e30=' # { }\n_CURRENT_SEARCH_DIR=${PROJECT_DIR}\n_PLIST_BUDDY=/usr/libexec/PlistBuddy\n_TARGET_PLIST=\"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"\n_DSYM_PLIST=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n_IS_CONFIG_JS=false\n\n# plist arrays\n_PLIST_ENTRY_KEYS=()\n_PLIST_ENTRY_TYPES=()\n_PLIST_ENTRY_VALUES=()\n\nfunction setPlistValue {\n  echo \"info:      setting plist entry '$1' of type '$2' in file '$4'\"\n  ${_PLIST_BUDDY} -c \"Add :$1 $2 '$3'\" $4 || echo \"info:      '$1' already exists\"\n}\n\nfunction getJsonKeyValue () {\n  if [[ ${_RN_ROOT_EXISTS} ]]; then\n    ruby -KU -e \"require 'rubygems';require 'json'; output=JSON.parse('$1'); puts output[$_JSON_ROOT]['$2']\"\n  else\n    echo \"\"\n  fi;\n}\n\nfunction jsonBoolToYesNo () {\n  if [[ $1 == \"false\" ]]; then\n    echo \"NO\"\n  elif [[ $1 == \"true\" ]]; then\n    echo \"YES\"\n  else echo \"NO\"\n  fi\n}\n\necho \"info: -> ${_PROJECT_ABBREVIATION} build script started\"\necho \"info: 1) Locating ${_JSON_FILE_NAME} file:\"\n\nif [[ -z ${_CURRENT_SEARCH_DIR} ]]; then\n  _CURRENT_SEARCH_DIR=$(pwd)\nfi;\n\nwhile true; do\n  _CURRENT_SEARCH_DIR=$(dirname \"$_CURRENT_SEARCH_DIR\")\n\n  if [[ \"$_CURRENT_SEARCH_DIR\" == \"/\" ]] || [[ ${_CURRENT_LOOKUPS} -gt ${_MAX_LOOKUPS} ]]; then\n    break;\n  fi;\n\n  echo \"info:      ($_CURRENT_LOOKUPS of $_MAX_LOOKUPS) Searching in '$_CURRENT_SEARCH_DIR' for a ${_JSON_FILE_NAME}/${_JS_APP_CONFIG_FILE_NAME} file.\"\n\n  _SEARCH_RESULT=$(find \"$_CURRENT_SEARCH_DIR\" -maxdepth 2 \\( -name ${_JSON_FILE_NAME} -o -name ${_JS_APP_CONFIG_FILE_NAME} \\) -print | /usr/bin/head -n 1)\n\n  if [[ \"$(basename ${_SEARCH_RESULT})\" = \"${_JS_APP_CONFIG_FILE_NAME}\" ]]; then\n    _IS_CONFIG_JS=true\n    echo \"info:      ${_JS_APP_CONFIG_FILE_NAME} found at $_SEARCH_RESULT\"\n    break;\n  fi;\n\n  if [[ \"$(basename ${_SEARCH_RESULT})\" = \"${_JSON_FILE_NAME}\" ]]; then\n    echo \"info:      ${_JSON_FILE_NAME} found at ${_SEARCH_RESULT}\"\n    break;\n  fi;\n\n  _CURRENT_LOOKUPS=$((_CURRENT_LOOKUPS+1))\ndone\n\nif [[ ${_SEARCH_RESULT} ]]; then\n  if [[ ${_IS_CONFIG_JS} == \"true\" ]]; then\n    _JSON_OUTPUT_RAW=$(\"${NODE_BINARY}\" -e \"console.log(JSON.stringify(require('${_SEARCH_RESULT}')));\")\n  else\n    _JSON_OUTPUT_RAW=$(cat \"${_SEARCH_RESULT}\")\n  fi;\n\n  _RN_ROOT_EXISTS=$(ruby -KU -e \"require 'rubygems';require 'json'; output=JSON.parse('$_JSON_OUTPUT_RAW'); puts output[$_JSON_ROOT]\" || echo '')\n\n  if [[ ${_RN_ROOT_EXISTS} ]]; then\n    if ! python3 --version >/dev/null 2>&1; then echo \"python3 not found, app.json file processing error.\" && exit 1; fi\n    _JSON_OUTPUT_BASE64=$(python3 -c 'import json,sys,base64;print(base64.b64encode(bytes(json.dumps(json.loads(open('\"'${_SEARCH_RESULT}'\"', '\"'rb'\"').read())['${_JSON_ROOT}']), '\"'utf-8'\"')).decode())' || echo \"e30=\")\n  fi\n\n  _PLIST_ENTRY_KEYS+=(\"google_mobile_ads_json_raw\")\n  _PLIST_ENTRY_TYPES+=(\"string\")\n  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")\n\n  # config.delay_app_measurement_init\n  _DELAY_APP_MEASUREMENT=$(getJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"delay_app_measurement_init\")\n  if [[ $_DELAY_APP_MEASUREMENT == \"true\" ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GADDelayAppMeasurementInit\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"YES\")\n  fi\n\n  # config.ios_app_id\n  _IOS_APP_ID=$(getJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"ios_app_id\")\n  if [[ $_IOS_APP_ID ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GADApplicationIdentifier\")\n    _PLIST_ENTRY_TYPES+=(\"string\")\n    _PLIST_ENTRY_VALUES+=(\"$_IOS_APP_ID\")\n  fi\n\n  # config.sk_ad_network_items\n  _SK_AD_NETWORK_ITEMS=$(getJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"sk_ad_network_items\")\n  if [[ $_SK_AD_NETWORK_ITEMS ]]; then\n    _PLIST_ENTRY_KEYS+=(\"SKAdNetworkItems\")\n    _PLIST_ENTRY_TYPES+=(\"array\")\n    _PLIST_ENTRY_VALUES+=(\"\")\n\n    oldifs=$IFS\n    IFS=\"\n\"\n    array=($(echo \"$_SK_AD_NETWORK_ITEMS\"))\n    IFS=$oldifs\n    for i in \"${!array[@]}\"; do\n      _PLIST_ENTRY_KEYS+=(\"SKAdNetworkItems:$i:SKAdNetworkIdentifier\")\n      _PLIST_ENTRY_TYPES+=(\"string\")\n      _PLIST_ENTRY_VALUES+=(\"${array[i]}\")  \n    done\n  fi\n\n    # config.user_tracking_usage_description\n  _USER_TRACKING_USAGE_DESCRIPTION=$(getJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"user_tracking_usage_description\")\n  if [[ $_USER_TRACKING_USAGE_DESCRIPTION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"NSUserTrackingUsageDescription\")\n    _PLIST_ENTRY_TYPES+=(\"string\")\n    _PLIST_ENTRY_VALUES+=(\"$_USER_TRACKING_USAGE_DESCRIPTION\")\n  fi\nelse\n  _PLIST_ENTRY_KEYS+=(\"google_mobile_ads_json_raw\")\n  _PLIST_ENTRY_TYPES+=(\"string\")\n  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")\n  echo \"warning:   A ${_JSON_FILE_NAME} file was not found, whilst this file is optional it is recommended to include it to auto-configure services.\"\nfi;\n\necho \"info: 2) Injecting Info.plist entries: \"\n\n# Log out the keys we're adding\nfor i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do\n  echo \"    ->  $i) ${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\"\ndone\n\nif ! [[ -f \"${_TARGET_PLIST}\" ]]; then\n  echo \"error: unable to locate Info.plist to set properties. App will crash without GADApplicationIdentifier set.\"\n  exit 1\nfi\n\nif ! [[ $_IOS_APP_ID ]]; then\n  echo \"error: ios_app_id key not found in react-native-google-mobile-ads key in app.json. App will crash without it.\"\n  exit 1\nfi\n\nfor plist in \"${_TARGET_PLIST}\" \"${_DSYM_PLIST}\" ; do\n  if [[ -f \"${plist}\" ]]; then\n\n    # paths with spaces break the call to setPlistValue. temporarily modify\n    # the shell internal field separator variable (IFS), which normally\n    # includes spaces, to consist only of line breaks\n    oldifs=$IFS\n    IFS=\"\n\"\n\n    for i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do\n      setPlistValue \"${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\" \"${plist}\"\n    done\n\n    # restore the original internal field separator value\n    IFS=$oldifs\n  else\n    echo \"warning:   A Info.plist build output file was not found (${plist})\"\n  fi\ndone\n\necho \"info: <- ${_PROJECT_ABBREVIATION} build script finished\"\n\n";
+			shellScript = (
+				"#!/usr/bin/env bash",
+				"#",
+				"# Copyright (c) 2016-present Invertase Limited & Contributors",
+				"#",
+				"# Licensed under the Apache License, Version 2.0 (the \"License\");",
+				"# you may not use this library except in compliance with the License.",
+				"# You may obtain a copy of the License at",
+				"#",
+				"#   http://www.apache.org/licenses/LICENSE-2.0",
+				"#",
+				"# Unless required by applicable law or agreed to in writing, software",
+				"# distributed under the License is distributed on an \"AS IS\" BASIS,",
+				"# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.",
+				"# See the License for the specific language governing permissions and",
+				"# limitations under the License.",
+				"#",
+				"",
+				"##########################################################################",
+				"##########################################################################",
+				"#",
+				"#  NOTE THAT IF YOU CHANGE THIS FILE YOU MUST RUN pod install AFTERWARDS",
+				"#",
+				"#  This file is installed as an Xcode build script in the project file",
+				"#  by cocoapods, and you will not see your changes until you pod install",
+				"#",
+				"##########################################################################",
+				"##########################################################################",
+				"",
+				"set -e",
+				"",
+				"if [[ -f \"$PODS_ROOT/../.xcode.env\" ]]; then",
+				"  source \"$PODS_ROOT/../.xcode.env\"",
+				"fi",
+				"if [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then",
+				"  source \"$PODS_ROOT/../.xcode.env.local\"",
+				"fi",
+				"",
+				"_MAX_LOOKUPS=2;",
+				"_SEARCH_RESULT=''",
+				"_RN_ROOT_EXISTS=''",
+				"_CURRENT_LOOKUPS=1",
+				"_PROJECT_ABBREVIATION=\"RNGoogleMobileAds\"",
+				"_JSON_ROOT=\"'react-native-google-mobile-ads'\"",
+				"_JSON_FILE_NAME='app.json'",
+				"_JS_APP_CONFIG_FILE_NAME='app.config.js'",
+				"_JSON_OUTPUT_BASE64='e30=' # { }",
+				"_CURRENT_SEARCH_DIR=${PROJECT_DIR}",
+				"_PLIST_BUDDY=/usr/libexec/PlistBuddy",
+				"_TARGET_PLIST=\"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"",
+				"_DSYM_PLIST=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"",
+				"_IS_CONFIG_JS=false",
+				"",
+				"# plist arrays",
+				"_PLIST_ENTRY_KEYS=()",
+				"_PLIST_ENTRY_TYPES=()",
+				"_PLIST_ENTRY_VALUES=()",
+				"",
+				"function setPlistValue {",
+				"  echo \"info:      setting plist entry '$1' of type '$2' in file '$4'\"",
+				"  ${_PLIST_BUDDY} -c \"Add :$1 $2 '$3'\" $4 || echo \"info:      '$1' already exists\"",
+				"}",
+				"",
+				"function getJsonKeyValue () {",
+				"  if [[ ${_RN_ROOT_EXISTS} ]]; then",
+				"    ruby -KU -e \"require 'rubygems';require 'json'; output=JSON.parse('$1'); puts output[$_JSON_ROOT]['$2']\"",
+				"  else",
+				"    echo \"\"",
+				"  fi;",
+				"}",
+				"",
+				"function jsonBoolToYesNo () {",
+				"  if [[ $1 == \"false\" ]]; then",
+				"    echo \"NO\"",
+				"  elif [[ $1 == \"true\" ]]; then",
+				"    echo \"YES\"",
+				"  else echo \"NO\"",
+				"  fi",
+				"}",
+				"",
+				"echo \"info: -> ${_PROJECT_ABBREVIATION} build script started\"",
+				"echo \"info: 1) Locating ${_JSON_FILE_NAME} file:\"",
+				"",
+				"if [[ -z ${_CURRENT_SEARCH_DIR} ]]; then",
+				"  _CURRENT_SEARCH_DIR=$(pwd)",
+				"fi;",
+				"",
+				"while true; do",
+				"  _CURRENT_SEARCH_DIR=$(dirname \"$_CURRENT_SEARCH_DIR\")",
+				"",
+				"  if [[ \"$_CURRENT_SEARCH_DIR\" == \"/\" ]] || [[ ${_CURRENT_LOOKUPS} -gt ${_MAX_LOOKUPS} ]]; then",
+				"    break;",
+				"  fi;",
+				"",
+				"  echo \"info:      ($_CURRENT_LOOKUPS of $_MAX_LOOKUPS) Searching in '$_CURRENT_SEARCH_DIR' for a ${_JSON_FILE_NAME}/${_JS_APP_CONFIG_FILE_NAME} file.\"",
+				"",
+				"  _SEARCH_RESULT=$(find \"$_CURRENT_SEARCH_DIR\" -maxdepth 2 \\( -name ${_JSON_FILE_NAME} -o -name ${_JS_APP_CONFIG_FILE_NAME} \\) -print | /usr/bin/head -n 1)",
+				"",
+				"  if [[ \"$(basename ${_SEARCH_RESULT})\" = \"${_JS_APP_CONFIG_FILE_NAME}\" ]]; then",
+				"    _IS_CONFIG_JS=true",
+				"    echo \"info:      ${_JS_APP_CONFIG_FILE_NAME} found at $_SEARCH_RESULT\"",
+				"    break;",
+				"  fi;",
+				"",
+				"  if [[ \"$(basename ${_SEARCH_RESULT})\" = \"${_JSON_FILE_NAME}\" ]]; then",
+				"    echo \"info:      ${_JSON_FILE_NAME} found at ${_SEARCH_RESULT}\"",
+				"    break;",
+				"  fi;",
+				"",
+				"  _CURRENT_LOOKUPS=$((_CURRENT_LOOKUPS+1))",
+				"done",
+				"",
+				"if [[ ${_SEARCH_RESULT} ]]; then",
+				"  if [[ ${_IS_CONFIG_JS} == \"true\" ]]; then",
+				"    _JSON_OUTPUT_RAW=$(\"${NODE_BINARY}\" -e \"console.log(JSON.stringify(require('${_SEARCH_RESULT}')));\")",
+				"  else",
+				"    _JSON_OUTPUT_RAW=$(cat \"${_SEARCH_RESULT}\")",
+				"  fi;",
+				"",
+				"  _RN_ROOT_EXISTS=$(ruby -KU -e \"require 'rubygems';require 'json'; output=JSON.parse('$_JSON_OUTPUT_RAW'); puts output[$_JSON_ROOT]\" || echo '')",
+				"",
+				"  if [[ ${_RN_ROOT_EXISTS} ]]; then",
+				"    if ! python3 --version >/dev/null 2>&1; then echo \"python3 not found, app.json file processing error.\" && exit 1; fi",
+				"    _JSON_OUTPUT_BASE64=$(python3 -c 'import json,sys,base64;print(base64.b64encode(bytes(json.dumps(json.loads(open('\"'${_SEARCH_RESULT}'\"', '\"'rb'\"').read())['${_JSON_ROOT}']), '\"'utf-8'\"')).decode())' || echo \"e30=\")",
+				"  fi",
+				"",
+				"  _PLIST_ENTRY_KEYS+=(\"google_mobile_ads_json_raw\")",
+				"  _PLIST_ENTRY_TYPES+=(\"string\")",
+				"  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")",
+				"",
+				"  # config.delay_app_measurement_init",
+				"  _DELAY_APP_MEASUREMENT=$(getJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"delay_app_measurement_init\")",
+				"  if [[ $_DELAY_APP_MEASUREMENT == \"true\" ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"GADDelayAppMeasurementInit\")",
+				"    _PLIST_ENTRY_TYPES+=(\"bool\")",
+				"    _PLIST_ENTRY_VALUES+=(\"YES\")",
+				"  fi",
+				"",
+				"  # config.ios_app_id",
+				"  _IOS_APP_ID=$(getJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"ios_app_id\")",
+				"  if [[ $_IOS_APP_ID ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"GADApplicationIdentifier\")",
+				"    _PLIST_ENTRY_TYPES+=(\"string\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$_IOS_APP_ID\")",
+				"  fi",
+				"",
+				"  # config.sk_ad_network_items",
+				"  _SK_AD_NETWORK_ITEMS=$(getJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"sk_ad_network_items\")",
+				"  if [[ $_SK_AD_NETWORK_ITEMS ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"SKAdNetworkItems\")",
+				"    _PLIST_ENTRY_TYPES+=(\"array\")",
+				"    _PLIST_ENTRY_VALUES+=(\"\")",
+				"",
+				"    oldifs=$IFS",
+				"    IFS=\"",
+				"\"",
+				"    array=($(echo \"$_SK_AD_NETWORK_ITEMS\"))",
+				"    IFS=$oldifs",
+				"    for i in \"${!array[@]}\"; do",
+				"      _PLIST_ENTRY_KEYS+=(\"SKAdNetworkItems:$i:SKAdNetworkIdentifier\")",
+				"      _PLIST_ENTRY_TYPES+=(\"string\")",
+				"      _PLIST_ENTRY_VALUES+=(\"${array[i]}\")  ",
+				"    done",
+				"  fi",
+				"",
+				"    # config.user_tracking_usage_description",
+				"  _USER_TRACKING_USAGE_DESCRIPTION=$(getJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"user_tracking_usage_description\")",
+				"  if [[ $_USER_TRACKING_USAGE_DESCRIPTION ]]; then",
+				"    _PLIST_ENTRY_KEYS+=(\"NSUserTrackingUsageDescription\")",
+				"    _PLIST_ENTRY_TYPES+=(\"string\")",
+				"    _PLIST_ENTRY_VALUES+=(\"$_USER_TRACKING_USAGE_DESCRIPTION\")",
+				"  fi",
+				"else",
+				"  _PLIST_ENTRY_KEYS+=(\"google_mobile_ads_json_raw\")",
+				"  _PLIST_ENTRY_TYPES+=(\"string\")",
+				"  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")",
+				"  echo \"warning:   A ${_JSON_FILE_NAME} file was not found, whilst this file is optional it is recommended to include it to auto-configure services.\"",
+				"fi;",
+				"",
+				"echo \"info: 2) Injecting Info.plist entries: \"",
+				"",
+				"# Log out the keys we're adding",
+				"for i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do",
+				"  echo \"    ->  $i) ${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\"",
+				"done",
+				"",
+				"if ! [[ -f \"${_TARGET_PLIST}\" ]]; then",
+				"  echo \"error: unable to locate Info.plist to set properties. App will crash without GADApplicationIdentifier set.\"",
+				"  exit 1",
+				"fi",
+				"",
+				"if ! [[ $_IOS_APP_ID ]]; then",
+				"  echo \"error: ios_app_id key not found in react-native-google-mobile-ads key in app.json. App will crash without it.\"",
+				"  exit 1",
+				"fi",
+				"",
+				"for plist in \"${_TARGET_PLIST}\" \"${_DSYM_PLIST}\" ; do",
+				"  if [[ -f \"${plist}\" ]]; then",
+				"",
+				"    # paths with spaces break the call to setPlistValue. temporarily modify",
+				"    # the shell internal field separator variable (IFS), which normally",
+				"    # includes spaces, to consist only of line breaks",
+				"    oldifs=$IFS",
+				"    IFS=\"",
+				"\"",
+				"",
+				"    for i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do",
+				"      setPlistValue \"${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\" \"${plist}\"",
+				"    done",
+				"",
+				"    # restore the original internal field separator value",
+				"    IFS=$oldifs",
+				"  else",
+				"    echo \"warning:   A Info.plist build output file was not found (${plist})\"",
+				"  fi",
+				"done",
+				"",
+				"echo \"info: <- ${_PROJECT_ABBREVIATION} build script finished\"",
+				"",
+				"",
+			);
 		};
 		5AC8D8BF5BD58DC75DF21061 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-RadarScout/Pods-RadarScout-frameworks.sh",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
@@ -302,19 +839,16 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RadarScout/Pods-RadarScout-frameworks.sh\"\n";
+			shellScript = (
+				"\"${PODS_ROOT}/Target Support Files/Pods-RadarScout/Pods-RadarScout-frameworks.sh\"",
+				"",
+			);
 			showEnvVarsInLog = 0;
 		};
 		5F0F3767BE12D2465F8191EF /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"$(SRCROOT)/.xcode.env",
 				"$(SRCROOT)/.xcode.env.local",
@@ -322,20 +856,18 @@
 				"$(SRCROOT)/Pods/Target Support Files/Pods-RadarScout/expo-configure-project.sh",
 			);
 			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"$(SRCROOT)/Pods/Target Support Files/Pods-RadarScout/ExpoModulesProvider.swift",
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-RadarScout/expo-configure-project.sh\"\n";
+			shellScript = (
+				"# This script configures Expo modules and generates the modules provider file.",
+				"bash -l -c \"./Pods/Target\\ Support\\ Files/Pods-RadarScout/expo-configure-project.sh\"",
+				"",
+			);
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-RadarScout/Pods-RadarScout-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/AppAuth/AppAuthCore_Privacy.bundle",
@@ -434,9 +966,11 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/nanopb_Privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMapsPrivacy.bundle",
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RadarScout/Pods-RadarScout-resources.sh\"\n";
+			shellScript = (
+				"\"${PODS_ROOT}/Target Support Files/Pods-RadarScout/Pods-RadarScout-resources.sh\"",
+				"",
+			);
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -444,17 +978,15 @@
 /* Begin PBXSourcesBuildPhase section */
 		13B07F871A680F5B00A75B9A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
 				96409CCA95F63D96921A52CC /* ExpoModulesProvider.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		13B07F941A680F5B00A75B9A /* Debug */ = {
+		13B07F941A680F5B00A75B9A /* Debug configuration for PBXNativeTarget "RadarScout" */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8657C15D3A2B353E4D6C79E0 /* Pods-RadarScout.debug.xcconfig */;
 			buildSettings = {
@@ -462,6 +994,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = RadarScout/RadarScout.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A6H7WS47FT;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -491,7 +1024,7 @@
 			};
 			name = Debug;
 		};
-		13B07F951A680F5B00A75B9A /* Release */ = {
+		13B07F951A680F5B00A75B9A /* Release configuration for PBXNativeTarget "RadarScout" */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 600DD57885BED8D334C68DFC /* Pods-RadarScout.release.xcconfig */;
 			buildSettings = {
@@ -499,6 +1032,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = RadarScout/RadarScout.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A6H7WS47FT;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = RadarScout/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
@@ -522,7 +1056,7 @@
 			};
 			name = Release;
 		};
-		83CBBA201A601CBA00E9B192 /* Debug */ = {
+		83CBBA201A601CBA00E9B192 /* Debug configuration for PBXProject "RadarScout" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -597,7 +1131,7 @@
 			};
 			name = Debug;
 		};
-		83CBBA211A601CBA00E9B192 /* Release */ = {
+		83CBBA211A601CBA00E9B192 /* Release configuration for PBXProject "RadarScout" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -670,22 +1204,31 @@
 		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "RadarScout" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				13B07F941A680F5B00A75B9A /* Debug */,
-				13B07F951A680F5B00A75B9A /* Release */,
+				13B07F941A680F5B00A75B9A /* Debug configuration for PBXNativeTarget "RadarScout" */,
+				13B07F951A680F5B00A75B9A /* Release configuration for PBXNativeTarget "RadarScout" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "RadarScout" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				83CBBA201A601CBA00E9B192 /* Debug */,
-				83CBBA211A601CBA00E9B192 /* Release */,
+				83CBBA201A601CBA00E9B192 /* Debug configuration for PBXProject "RadarScout" */,
+				83CBBA211A601CBA00E9B192 /* Release configuration for PBXProject "RadarScout" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D29605FD2FC2410000D30A8D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.13.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }

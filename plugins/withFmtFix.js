@@ -87,16 +87,16 @@ end
       const callString = '    radar_scout_apply_fmt_workaround(installer)';
       if (!contents.includes(callString)) {
         const postInstallCallPattern =
-          /(react_native_post_install\\(\\n\\s+installer,\\n\\s+config\\[:reactNativePath\\],[\\s\\S]*?\\n\\s+\\)\\n)/;
+          /(react_native_post_install\(\s*installer,\s*config\[:reactNativePath\],[\s\S]*?\n\s+\)\n)/;
         if (postInstallCallPattern.test(contents)) {
           contents = contents.replace(
             postInstallCallPattern,
-            `$1${callString}\\n`
+            `$1${callString}\n`
           );
         } else {
           contents = contents.replace(
-            /post_install do \\|installer\\|\\n/,
-            `post_install do |installer|\\n${callString}\\n`
+            /post_install do \|installer\|\n/,
+            `post_install do |installer|\n${callString}\n`
           );
         }
       }
