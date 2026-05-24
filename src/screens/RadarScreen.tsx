@@ -846,6 +846,10 @@ const RadarScreen = ({ navigation, route }: any) => {
     );
   }
 
+  const homeRadarSize = Math.round(
+    Math.max(174, Math.min(width * 0.54, height * 0.25, 232))
+  );
+
   return (
     <RadarHomeDashboard
       styles={styles}
@@ -855,8 +859,8 @@ const RadarScreen = ({ navigation, route }: any) => {
       proSliderRef={proSliderRef}
       proSliderIndex={proSliderIndex}
       proFeatures={PRO_FEATURES}
-      radarAuraSize={Math.round(Math.max(176, Math.min(Math.round(width * 0.58), 290)) * 0.78)}
-      radarAnimationSize={Math.max(176, Math.min(Math.round(width * 0.58), 290))}
+      radarAuraSize={Math.round(homeRadarSize * 0.78)}
+      radarAnimationSize={homeRadarSize}
       closestRadar={dataSync.closestRadar}
       nearestRadarSummary={nearestRadarSummary}
       currentSpeed={dataSync.currentSpeed}

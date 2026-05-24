@@ -29,9 +29,10 @@ const PermitTestScreen = ({ navigation }: any) => {
   const STATES = getAllStates();
 
   React.useEffect(() => {
-    // Show ad on entry for free users
-    AdService.showInterstitial('permit_test').catch(() => {});
-  }, []);
+    if (!canUse) {
+      AdService.showInterstitial('permit_test').catch(() => {});
+    }
+  }, [canUse]);
 
   // Load questions when state is selected
   React.useEffect(() => {
@@ -50,6 +51,16 @@ const PermitTestScreen = ({ navigation }: any) => {
       <AccessBootstrapView
         title="Checking Access"
         subtitle="Loading permit practice features..."
+      />
+    );
+  }
+
+  if (!canUse) {
+    return (
+      <ProGate
+        title="Permit Test"
+        subtitle="Practice tests are a Pro feature. Free drivers see the ad-supported preview here, while Pro unlocks state-specific questions, scoring, and explanations."
+        onUpgrade={() => navigation.navigate('Home', { screen: 'Subscription' })}
       />
     );
   }

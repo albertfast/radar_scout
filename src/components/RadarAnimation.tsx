@@ -56,15 +56,16 @@ export const RadarAnimation = ({
   const shouldUseLife3D = useMemo(() => {
     if (preferFallback) return false;
     if (selectedMode === 'legacy2d') return false;
-    if (selectedMode === 'auto') return canUseLife3D;
-    return canUseLife3D;
-  }, [canUseLife3D, preferFallback, selectedMode]);
+    return true;
+  }, [preferFallback, selectedMode]);
 
   useEffect(() => {
-    if (shouldUseLife3D) {
-      logInfo('Life3D radar renderer active');
-    } else if (selectedMode === 'life3d' && !canUseLife3D) {
-      logInfo('Life3D requested but native view unavailable, using legacy 2D fallback');
+    if (shouldUseLife3D && canUseLife3D) {
+      logInfo('Life3D radar native renderer active');
+    } else if (shouldUseLife3D) {
+      logInfo('Life3D native view unavailable, using JS/Three radar fallback');
+    } else {
+      logInfo('Legacy 2D radar fallback active');
     }
   }, [canUseLife3D, selectedMode, shouldUseLife3D]);
 

@@ -95,17 +95,15 @@ const AIDiagnoseScreen = ({ navigation }: any) => {
   }, [recording]);
 
   useEffect(() => {
-    // Show ad on entry for free users
-    AdService.showInterstitial('ai_diagnose_entry').catch(() => {});
-    
-    if (!canUse) return;
+    if (!canUse) {
+      AdService.showInterstitial('ai_diagnose_entry').catch(() => {});
+      return;
+    }
     
     // iOS için gecikmeli model yükleme
     const loadTimeout = setTimeout(() => {
       loadModels();
     }, Platform.OS === 'ios' ? 2000 : 500);
-    
-    AdService.showInterstitial('ai_diagnose').catch(() => {});
     
     return () => clearTimeout(loadTimeout);
   }, [canUse]);
@@ -349,7 +347,7 @@ const AIDiagnoseScreen = ({ navigation }: any) => {
     return (
       <ProGate
         title="AI Diagnostics"
-        subtitle="Upgrade to Pro to scan dashboard lights with AI."
+        subtitle="Watch the ad-supported preview, then upgrade to Pro to run the on-device dashboard-light model. The model scans your photo locally, compares warning-light patterns, and returns confidence plus repair guidance."
         onUpgrade={() => navigation.navigate('Home', { screen: 'Subscription' })}
       />
     );

@@ -15,7 +15,9 @@ export type AdPlacement =
   | 'end_ride'
   | 'open_settings'
   | 'open_leaderboard'
+  | 'tab_drive'
   | 'ai_diagnose'
+  | 'ai_diagnose_entry'
   | 'permit_test';
 
 export type AdShowResult =
@@ -65,6 +67,14 @@ const NAV_PLACEMENT_COOLDOWN_MS = 5 * 60 * 1000;
 const APP_OPEN_COOLDOWN_MS = 5 * 60 * 1000;
 const INTERSTITIAL_EXPIRY_MS = 60 * 60 * 1000;
 const APP_OPEN_EXPIRY_MS = 4 * 60 * 60 * 1000;
+const INTERSTITIAL_ELIGIBLE_PLACEMENTS = new Set<AdPlacement>([
+  'start_driving_basic',
+  'onboarding_entry',
+  'tab_drive',
+  'ai_diagnose',
+  'ai_diagnose_entry',
+  'permit_test',
+]);
 
 const isTruthyFlag = (value?: string) => value === '1' || value === 'true' || value === 'yes';
 const isAdDebugEnabled = () => __DEV__ || isTruthyFlag(process.env.EXPO_PUBLIC_AD_DEBUG);
@@ -589,7 +599,7 @@ export class AdService {
   }
 
   private static checkInterstitialEligibility(placement: AdPlacement): AdSkipResult | null {
-    if (placement !== 'start_driving_basic' && placement !== 'onboarding_entry' && placement !== 'ai_diagnose' && placement !== 'permit_test') return 'skipped_not_eligible';
+    if (!INTERSTITIAL_ELIGIBLE_PLACEMENTS.has(placement)) return 'skipped_not_eligible';
     if (!this.shouldShowAds()) return 'skipped_not_eligible';
     if (placement === 'start_driving_basic' && this.hasAttemptedStartDrivingInterstitial) return 'skipped_session_cap';
 
@@ -602,14 +612,16 @@ export class AdService {
   }
 
   static async showInterstitial(placement: AdPlacement): Promise<AdShowResult> {
-    if (placement !== 'start_driving_basic' && placement !== 'onboarding_entry' && placement !== 'ai_diagnose' && placement !== 'permit_test') {
+    if (!INTERSTITIAL_ELIGIBLE_PLACEMENTS.has(placement)) {
       return this.skipResult('interstitial', placement, 'skipped_not_eligible');
     }
 
     const eligibility = this.checkInterstitialEligibility(placement);
     if (eligibility) return this.skipResult('interstitial', placement, eligibility);
 
-    this.hasAttemptedStartDrivingInterstitial = true;
+    if (placement === 'start_driving_basic') {
+      this.hasAttemptedStartDrivingInterstitial = true;
+    }
 
     await this.init();
     if (!this.isInitialized) {

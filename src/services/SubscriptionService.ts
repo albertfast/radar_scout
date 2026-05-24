@@ -158,11 +158,18 @@ const RC_CANONICAL_PACKAGE_IDS: Record<RevenueCatPlanPreference, string> = {
   adfree: '$rc_lifetime',
 };
 
-const RC_CANONICAL_PRODUCT_IDS: Record<RevenueCatPlanPreference, string> = {
-  weekly: 'pro_subscription_weekly',
-  yearly: 'pro_subscription_yearly',
-  adfree: 'remove_ads',
-};
+const RC_CANONICAL_PRODUCT_IDS: Record<RevenueCatPlanPreference, string> =
+  Platform.OS === 'ios'
+    ? {
+        weekly: 'weekly1',
+        yearly: 'yearly1',
+        adfree: 'ads_remove',
+      }
+    : {
+        weekly: 'pro_subscription:weekly',
+        yearly: 'pro_subscription:yearly',
+        adfree: 'remove_ads',
+      };
 
 const RC_ENV_PRODUCT_IDS: Record<RevenueCatPlanPreference, string> = {
   weekly: String(process.env.EXPO_PUBLIC_RC_PRODUCT_WEEKLY || '').trim(),
@@ -179,6 +186,7 @@ const RC_ENV_PACKAGE_IDS: Record<RevenueCatPlanPreference, string> = {
 const RC_COMPAT_PRODUCT_IDS: Record<RevenueCatPlanPreference, string[]> = {
   weekly: [
     'weekly1',
+    'pro_subscription_weekly',
     'pro_subscription:weekly',
     'weekly',
     'rc_weekly',
@@ -188,7 +196,8 @@ const RC_COMPAT_PRODUCT_IDS: Record<RevenueCatPlanPreference, string[]> = {
     'premium_subscription_weekly',
   ],
   yearly: [
-    'monthly1',
+    'yearly1',
+    'pro_subscription_yearly',
     'pro_subscription:yearly',
     'yearly',
     'annual',
@@ -200,6 +209,7 @@ const RC_COMPAT_PRODUCT_IDS: Record<RevenueCatPlanPreference, string[]> = {
   ],
   adfree: [
     'ads_remove',
+    'remove_ads',
     'remove_advertisement',
     'adfree',
     'ad_free',

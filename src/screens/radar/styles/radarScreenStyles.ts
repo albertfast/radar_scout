@@ -3,13 +3,13 @@ export const radarScreenStyles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#020617' },
   
   // Header
-  mainHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingBottom: 20 },
+  mainHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingBottom: 12 },
   appName: { color: '#F8FAFC', fontSize: 22, fontWeight: '900', letterSpacing: 1 },
   headerRight: { flexDirection: 'row', gap: 10 },
   iconBtn: { padding: 10, backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
 
   // Hero
-  heroCard: { marginHorizontal: 16, marginTop: 6, marginBottom: 8, borderRadius: 22, overflow: 'hidden', paddingHorizontal: 12, paddingVertical: 10, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', backgroundColor: 'rgba(12,18,32,0.92)' },
+  heroCard: { marginHorizontal: 16, marginTop: 4, marginBottom: 4, borderRadius: 22, overflow: 'hidden', paddingHorizontal: 12, paddingVertical: 8, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', backgroundColor: 'rgba(12,18,32,0.92)' },
   heroGlowPrimary: { position: 'absolute', width: 180, height: 180, borderRadius: 90, backgroundColor: 'rgba(78,205,196,0.18)', top: -40, right: -24 },
   heroGlowSecondary: { position: 'absolute', width: 160, height: 160, borderRadius: 80, backgroundColor: 'rgba(255,82,82,0.08)', bottom: -50, left: -24 },
   heroTopRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
@@ -17,7 +17,7 @@ export const radarScreenStyles = StyleSheet.create({
   heroTitle: { color: '#F8FAFC', fontSize: 22, fontWeight: '900', letterSpacing: 0.4, marginTop: 2 },
   heroBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#4ECDC4', paddingHorizontal: 11, paddingVertical: 7, borderRadius: 14, gap: 6, shadowColor: '#4ECDC4', shadowOpacity: 0.4, shadowRadius: 10, elevation: 4 },
   heroBadgeText: { color: '#0B1424', fontWeight: '900', letterSpacing: 0.5 },
-  radarShell: { alignItems: 'center', justifyContent: 'center', marginTop: -8, marginBottom: 0 },
+  radarShell: { alignItems: 'center', justifyContent: 'center', marginTop: -14, marginBottom: -2 },
   radarAura: { position: 'absolute', backgroundColor: 'rgba(78,205,196,0.05)' },
   radarChip: { position: 'absolute', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 7, borderRadius: 14, backgroundColor: 'rgba(2,6,23,0.82)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' },
   radarChipLeft: { top: 12, left: 14 },
@@ -40,7 +40,7 @@ export const radarScreenStyles = StyleSheet.create({
     borderColor: 'rgba(148,163,184,0.2)',
     backgroundColor: 'rgba(7,14,28,0.82)',
     paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingVertical: 8,
     justifyContent: 'space-between',
     gap: 10,
   },
@@ -84,10 +84,10 @@ export const radarScreenStyles = StyleSheet.create({
   voicePillTextOff: { color: '#E2E8F0' },
 
   // Pro Slider
-  sliderContainer: { marginHorizontal: 16, marginTop: 0, marginBottom: 10, borderRadius: 18, overflow: 'hidden' },
-  sliderGradient: { paddingVertical: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  sliderContainer: { marginHorizontal: 16, marginTop: 0, marginBottom: 8, borderRadius: 18, overflow: 'hidden' },
+  sliderGradient: { paddingVertical: 10, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
   proIconBox: { width: 32, height: 32, borderRadius: 10, justifyContent: 'center', alignItems: 'center' },
-  pager: { flexDirection: 'row', justifyContent: 'center', marginTop: 15, gap: 6 },
+  pager: { flexDirection: 'row', justifyContent: 'center', marginTop: 9, gap: 6 },
   dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#334155' },
 
   // Driving Mode

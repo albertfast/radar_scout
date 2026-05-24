@@ -47,7 +47,7 @@ const RadarLife3DView = (props: RadarLife3DViewProps) => {
     return <NativeRadarLife3DView {...props} />;
   }
 
-  // Fallback: renders RadarLife3DFallback which internally lazy-loads three.js
+  // Fallback: visible RN/Reanimated radar when native 3D view is unavailable.
   return <RadarLife3DFallback {...props} />;
 };
 

@@ -10,6 +10,7 @@ import MainTabNavigator from './MainTabNavigator';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { appVersion, nativeBuildVersion } from '../utils/buildInfo';
 import { APP_DISPLAY_NAME } from '../config/appIdentity';
+import { hasProAccess } from '../utils/access';
 
 const Drawer = createDrawerNavigator();
 const allowLayoutAnimations = Platform.OS !== 'android';
@@ -20,6 +21,7 @@ const CustomDrawerContent = (props: any) => {
   const { width } = useWindowDimensions();
   const horizontalPadding = Math.max(20, Math.min(28, Math.round(width * 0.06)));
   const topPadding = insets.top + Math.max(20, Math.min(36, Math.round(width * 0.04)));
+  const isPro = hasProAccess(user);
 
   const menuItems: Array<{ icon: string; label: string; screen: string; color: string; params?: any }> = [
     {
@@ -115,6 +117,30 @@ const CustomDrawerContent = (props: any) => {
                  </Animated.View>
              )}
         </View>
+
+        {!isPro && (
+            <TouchableOpacity
+                style={[styles.upgradeCard, { marginHorizontal: horizontalPadding }]}
+                activeOpacity={0.9}
+                onPress={() => handleNavigate('Subscription')}
+            >
+                <LinearGradient
+                    colors={['rgba(78, 205, 196, 0.24)', 'rgba(255, 82, 82, 0.16)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.upgradeGradient}
+                >
+                    <View style={styles.upgradeIcon}>
+                        <MaterialCommunityIcons name="crown" size={20} color="#FFD84D" />
+                    </View>
+                    <View style={styles.upgradeCopy}>
+                        <Text style={styles.upgradeTitle}>Unlock PRO</Text>
+                        <Text style={styles.upgradeSubtitle}>3D radar, AI, permit tests, no ads</Text>
+                    </View>
+                    <MaterialCommunityIcons name="chevron-right" size={22} color="#CBD5E1" />
+                </LinearGradient>
+            </TouchableOpacity>
+        )}
 
         <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerContent}>
             <View style={styles.menuSection}>
@@ -264,6 +290,43 @@ const styles = StyleSheet.create({
   },
   drawerContent: {
     paddingTop: 20,
+  },
+  upgradeCard: {
+    marginTop: 14,
+    borderRadius: 18,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(78,205,196,0.28)',
+  },
+  upgradeGradient: {
+    minHeight: 78,
+    padding: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  upgradeIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,216,77,0.15)',
+  },
+  upgradeCopy: {
+    flex: 1,
+  },
+  upgradeTitle: {
+    color: '#F8FAFC',
+    fontSize: 16,
+    fontWeight: '900',
+  },
+  upgradeSubtitle: {
+    marginTop: 3,
+    color: '#A9B7CA',
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '600',
   },
   sectionHeader: {
     color: '#64748B',

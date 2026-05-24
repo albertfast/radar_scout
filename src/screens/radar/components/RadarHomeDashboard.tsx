@@ -150,18 +150,15 @@ export function RadarHomeDashboard({
   onToggleVoiceWarnings,
   pauseRadarAnimation,
 }: RadarHomeDashboardProps) {
-  const homeBottomInset = tabBarInset + Math.max(28, Math.round(width * 0.08));
+  const homeBottomInset = tabBarInset + Math.max(10, Math.round(width * 0.03));
   const isCompactWidth = width <= 420;
   const heroVerticalPadding = isCompactWidth ? 10 : 14;
   const heroTopMargin = isCompactWidth ? 2 : 6;
   const buttonBottomSpacing = isCompactWidth ? getResponsiveHeight(8) : getResponsiveHeight(10);
-  const contentBottomPadding = Math.max(
-    homeBottomInset,
-    getResponsiveHeight(52)
-  );
+  const contentBottomPadding = Math.max(homeBottomInset, getResponsiveHeight(24));
   const quickPanelMinHeight = Math.max(
-    getResponsiveHeight(118),
-    Math.round(tabBarInset * 0.86)
+    getResponsiveHeight(96),
+    Math.round(tabBarInset * 0.68)
   );
 
   return (
@@ -198,7 +195,7 @@ export function RadarHomeDashboard({
       <ScrollView
         contentContainerStyle={{ paddingBottom: contentBottomPadding }}
         showsVerticalScrollIndicator={false}
-        scrollEnabled
+        scrollEnabled={false}
       >
         {!canUsePro && (
           <View style={styles.sliderContainer}>
