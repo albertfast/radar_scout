@@ -177,7 +177,8 @@ module.exports = {
           ios: {
             deploymentTarget: "16.1",
             useFrameworks: "static",
-            buildReactNativeFromSource: true
+            buildReactNativeFromSource: false,
+            ccacheEnabled: true
           }
         }
       ],

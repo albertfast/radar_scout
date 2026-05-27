@@ -10,7 +10,6 @@ import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { MapFlowNavigationScreen, useNavigationStore } from '../mapflow-navigation-kit/src';
-import { RadarMapMarker } from '../mapflow-navigation-kit/src/types/map';
 import { formatDistance as formatMapDistance } from '../mapflow-navigation-kit/src/utils/units';
 import { LocationPermissionGate } from '../components/LocationPermissionGate';
 import { useAuthStore } from '../store/authStore';
@@ -37,22 +36,6 @@ import { ErrorBoundary } from '../components/ErrorBoundary';
 
 const NOOP_SET_ACTIVE_TAB = () => {};
 const RADAR_DRIVE_NAV_KEEP_AWAKE_TAG = 'radar_drive_navigation';
-const MAPFLOW_VIEWPORT_RADAR_DEBOUNCE_MS = 700;
-const MAPFLOW_VIEWPORT_RADAR_MAX_RADIUS_KM = 35;
-const MAPFLOW_VIEWPORT_RADAR_MIN_RADIUS_KM = 2;
-
-const isSpeedCameraType = (type: string | undefined): boolean =>
-  type === 'speed_camera' || type === 'fixed';
-
-const radiusKmForBrowseZoom = (latitude: number, zoom: number) => {
-  const safeZoom = Number.isFinite(zoom) ? Math.max(3, Math.min(18, zoom)) : 12;
-  const latScale = Math.max(0.35, Math.cos((latitude * Math.PI) / 180));
-  const estimatedKm = 2.4 * Math.pow(2, 14 - safeZoom) * latScale;
-  return Math.max(
-    MAPFLOW_VIEWPORT_RADAR_MIN_RADIUS_KM,
-    Math.min(MAPFLOW_VIEWPORT_RADAR_MAX_RADIUS_KM, estimatedKm)
-  );
-};
 
 const toRadarLocation = (
   userLocation: { lat: number; lng: number } | null,
@@ -145,7 +128,6 @@ export default function RadarDriveNavigationScreen({ navigation, route }: any) {
   const { user, refreshProfile } = useAuthStore();
   const canUsePro = hasProAccess(user);
   const {
-    browseViewport,
     userLocation,
     userHeading,
     userSpeed,
@@ -177,7 +159,6 @@ export default function RadarDriveNavigationScreen({ navigation, route }: any) {
 
   const [nearbyRadars, setNearbyRadars] = useState<Array<RadarLocation & { distance: number }>>([]);
   const [routeRadars, setRouteRadars] = useState<Array<RadarLocation & { distance: number }>>([]);
-  const [viewportRadars, setViewportRadars] = useState<Array<RadarLocation & { distance: number }>>([]);
   const [reportModalVisible, setReportModalVisible] = useState(false);
   const [mapUnavailableReason, setMapUnavailableReason] = useState<string | null>(null);
   const requestedInitialTab = resolveInitialTab(route?.params?.initialTab);
@@ -199,14 +180,6 @@ export default function RadarDriveNavigationScreen({ navigation, route }: any) {
   const lastGuidanceActiveRef = useRef<boolean | null>(null);
   const lastRoutePathSignatureRef = useRef('empty');
   const lastRadarListSignatureRef = useRef('empty');
-  const viewportFetchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const viewportFetchRequestIdRef = useRef(0);
-  const lastViewportFetchRef = useRef<{
-    latitude: number;
-    longitude: number;
-    radiusKm: number;
-    fetchedAt: number;
-  } | null>(null);
 
   useEffect(() => {
     currentLocationRef.current = currentLocation;
@@ -459,104 +432,6 @@ export default function RadarDriveNavigationScreen({ navigation, route }: any) {
   }, [currentLocation, hasRoute, nearbyRadars, routeRadars]);
 
   useEffect(() => {
-    if (hasRoute) {
-      setViewportRadars([]);
-      lastViewportFetchRef.current = null;
-      return () => {};
-    }
-
-    if (!browseViewport || browseViewport.zoom <= 3) {
-      return () => {};
-    }
-
-    if (viewportFetchTimerRef.current) {
-      clearTimeout(viewportFetchTimerRef.current);
-    }
-
-    const requestId = viewportFetchRequestIdRef.current + 1;
-    viewportFetchRequestIdRef.current = requestId;
-
-    viewportFetchTimerRef.current = setTimeout(async () => {
-      if (hasRoute) return;
-      const radiusKm = radiusKmForBrowseZoom(browseViewport.lat, browseViewport.zoom);
-      const lastFetch = lastViewportFetchRef.current;
-      if (lastFetch) {
-        const movedKm = LocationService.calculateDistanceSync(
-          browseViewport.lat,
-          browseViewport.lng,
-          lastFetch.latitude,
-          lastFetch.longitude
-        );
-        const radiusDeltaRatio =
-          Math.abs(radiusKm - lastFetch.radiusKm) / Math.max(1, lastFetch.radiusKm);
-        const isFresh = Date.now() - lastFetch.fetchedAt < 10000;
-        const isSameCoverage =
-          movedKm < Math.max(0.75, radiusKm * 0.18) && radiusDeltaRatio < 0.35;
-        if (isFresh && isSameCoverage) {
-          return;
-        }
-      }
-
-      lastViewportFetchRef.current = {
-        latitude: browseViewport.lat,
-        longitude: browseViewport.lng,
-        radiusKm,
-        fetchedAt: Date.now(),
-      };
-
-      const radars = await RadarService.getNearbyRadars(
-        browseViewport.lat,
-        browseViewport.lng,
-        radiusKm
-      );
-      if (viewportFetchRequestIdRef.current !== requestId) return;
-
-      const liveLocation = currentLocationRef.current;
-      const speedCameraRadars = radars
-        .filter((radar) => isSpeedCameraType(radar?.type))
-        .map((radar) => {
-          if (!liveLocation) return radar;
-          return {
-            ...radar,
-            distance: LocationService.calculateDistanceSync(
-              liveLocation.latitude,
-              liveLocation.longitude,
-              radar.latitude,
-              radar.longitude
-            ),
-          };
-        });
-
-      setViewportRadars(speedCameraRadars);
-    }, MAPFLOW_VIEWPORT_RADAR_DEBOUNCE_MS);
-
-    return () => {
-      if (viewportFetchTimerRef.current) {
-        clearTimeout(viewportFetchTimerRef.current);
-        viewportFetchTimerRef.current = null;
-      }
-    };
-  }, [browseViewport, hasRoute]);
-
-  const mapDisplayRadars = useMemo(() => {
-    if (hasRoute) return displayRadars;
-
-    const merged = new Map<string, RadarLocation & { distance: number }>();
-    for (const radar of viewportRadars) {
-      if (radar?.id) merged.set(radar.id, radar);
-    }
-    for (const radar of displayRadars) {
-      if (!radar?.id) continue;
-      merged.set(radar.id, {
-        ...merged.get(radar.id),
-        ...radar,
-      });
-    }
-
-    return Array.from(merged.values()).sort((left, right) => left.distance - right.distance);
-  }, [displayRadars, hasRoute, viewportRadars]);
-
-  useEffect(() => {
     const nextSignature = buildRadarListSignature(displayRadars);
     if (lastRadarListSignatureRef.current === nextSignature) {
       return;
@@ -574,24 +449,6 @@ export default function RadarDriveNavigationScreen({ navigation, route }: any) {
   const { signalLevel: radarSignalLevel, dangerLevel: radarDangerLevel } = useRadarSignalLevels(
     displayRadars,
     displayRadars[0] || null
-  );
-
-  const radarMarkers = useMemo<RadarMapMarker[]>(
-    () =>
-      mapDisplayRadars
-        .filter((radar) => hasRoute || isSpeedCameraType(radar?.type))
-        .slice(0, 160)
-        .map((radar) => ({
-          id: radar.id,
-          lat: radar.latitude,
-          lng: radar.longitude,
-          type: radar.type,
-          markerKind: radar.markerKind || (isSpeedCameraType(radar.type) ? 'camera' : null),
-          speedLimit: radar.speedLimit ?? null,
-          active: activeAlert?.radarId === radar.id,
-          iconUri: null,
-        })),
-    [activeAlert?.radarId, hasRoute, mapDisplayRadars]
   );
 
   const handleReportRadar = useCallback(
@@ -719,10 +576,6 @@ export default function RadarDriveNavigationScreen({ navigation, route }: any) {
 
   useEffect(() => {
     return () => {
-      if (viewportFetchTimerRef.current) {
-        clearTimeout(viewportFetchTimerRef.current);
-        viewportFetchTimerRef.current = null;
-      }
       stopNavigationRef.current();
       saveTripIfNeededRef.current().catch(() => {});
       resetDrivingSessionRef.current();
@@ -812,7 +665,6 @@ export default function RadarDriveNavigationScreen({ navigation, route }: any) {
             }
           >
             <MapFlowNavigationScreen
-              radarMarkers={radarMarkers}
               highlightedRadarId={activeAlert?.radarId || null}
               onMapUnavailable={(reason) => {
                 setMapUnavailableReason((current) => current || reason);

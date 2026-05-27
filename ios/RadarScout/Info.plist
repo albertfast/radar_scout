@@ -46,7 +46,9 @@
       </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>1779568221308</string>
+    <string>1779895123095</string>
+    <key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-9670547831022880~2252519276</string>
     <key>GMSApiKey</key>
     <string>AIzaSyAtZoFF2DvstwmZuLxh0JR2CsK3clsYtbQ</string>
     <key>ITSAppUsesNonExemptEncryption</key>

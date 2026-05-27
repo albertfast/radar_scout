@@ -432,15 +432,44 @@ export class RadarService {
     return Number.isFinite(value) && value > 0 ? value : undefined;
   }
 
-  private static normalizeRadarType(input: any): RadarLocation['type'] {
-    const value = String(input || '').toLowerCase();
-    if (value === 'fixed') return 'fixed';
-    if (value === 'mobile') return 'mobile';
-    if (value === 'red_light') return 'red_light';
-    if (value === 'speed_camera') return 'speed_camera';
+  private static normalizeRadarType(input: any): RadarLocation['type'] | null {
+    const value = String(input || '')
+      .trim()
+      .toLowerCase()
+      .replace(/[\s-]+/g, '_');
+
+    if (!value) return null;
+
+    const nonAlertCameraTypes = new Set([
+      'camera',
+      'traffic_camera',
+      'traffic_cameras',
+      'traffic_cam',
+      'cctv',
+      'webcam',
+      'live_camera',
+      'road_camera',
+      'surveillance_camera',
+      'video_camera',
+    ]);
+    if (nonAlertCameraTypes.has(value)) return null;
+
+    if (value === 'fixed' || value === 'speed_fixed' || value === 'fixed_speed') {
+      return 'fixed';
+    }
+    if (value === 'speed_camera' || value === 'fixed_speed_camera' || value === 'maxspeed') {
+      return 'speed_camera';
+    }
+    if (value === 'red_light' || value === 'redlight' || value === 'red_light_camera') {
+      return 'red_light';
+    }
+    if (value === 'mobile' || value === 'mobile_camera' || value === 'mobile_speed_camera') {
+      return 'mobile';
+    }
     if (value === 'police') return 'police';
     if (value === 'traffic_enforcement') return 'traffic_enforcement';
-    return 'speed_camera';
+
+    return null;
   }
 
   private static getMarkerKind(type: RadarLocation['type']): RadarLocation['markerKind'] {
@@ -459,6 +488,8 @@ export class RadarService {
   } {
     const rawSource = String(row?.source || '').trim().toLowerCase();
     const rawId = String(row?.id || '').trim();
+    const metadata = this.readRowMetadata(row);
+    const metadataSourceKey = String(metadata.source_key || '').trim().toLowerCase();
 
     let source: RadarLocation['source'] = 'community';
     let sourceKey: string | undefined;
@@ -473,6 +504,11 @@ export class RadarService {
     } else if (rawSource && rawSource !== 'community') {
       source = 'external';
       sourceKey = rawSource;
+    }
+
+    if (metadataSourceKey) {
+      sourceKey = metadataSourceKey;
+      source = metadataSourceKey === 'osm' ? 'external_osm' : 'external';
     }
 
     const rule = getExternalCameraSourceRule(sourceKey);
@@ -528,6 +564,19 @@ export class RadarService {
     return undefined;
   }
 
+  private static isMetadataAlertDisabled(metadata: Record<string, unknown>): boolean {
+    const alertPolicy = String(metadata.alert_policy || '').trim().toLowerCase();
+    if (alertPolicy === 'map_only' || alertPolicy === 'ignore') return true;
+
+    const alertEligible = metadata.alert_eligible;
+    if (alertEligible === false || alertEligible === 0) return true;
+    if (typeof alertEligible === 'string') {
+      return /^(0|false|no)$/i.test(alertEligible.trim());
+    }
+
+    return false;
+  }
+
   private static withRadarMetadata(radar: RadarLocation): RadarLocation {
     return {
       ...radar,
@@ -577,9 +626,17 @@ export class RadarService {
 
     const sourceMeta = this.normalizeSourceMetadata(row);
     const sourceRule = getExternalCameraSourceRule(sourceMeta.sourceKey);
-    if (sourceRule?.alertPolicy === 'map_only' || sourceRule?.alertPolicy === 'ignore') {
+    const metadata = this.readRowMetadata(row);
+    if (
+      sourceRule?.alertPolicy === 'map_only' ||
+      sourceRule?.alertPolicy === 'ignore' ||
+      this.isMetadataAlertDisabled(metadata)
+    ) {
       return null;
     }
+    const type = this.normalizeRadarType(row?.type);
+    if (!type) return null;
+
     const confidence = Number(row?.confidence);
     const countryCode = this.parseCountryCode(row, sourceMeta.sourceKey);
     return this.withRadarMetadata({
@@ -588,7 +645,7 @@ export class RadarService {
       ),
       latitude,
       longitude,
-      type: this.normalizeRadarType(row?.type),
+      type,
       speedLimit: this.parseSupabaseSpeedLimit(row),
       countryCode,
       confidence:

@@ -56,7 +56,11 @@ const MAP_HTML = `<!DOCTYPE html>
     var userMarkerElement = null;
     var destMarker = null;
     var radarMarkers = {};
+    var radarMarkerPayload = [];
     var highlightedRadarId = null;
+    var RADAR_MARKERS_ENABLED = false;
+    var RADAR_MARKER_RENDER_CAP = 120;
+    var RADAR_MARKER_VIEWPORT_PADDING_RATIO = 0.18;
 
     var map = new maplibregl.Map({
       container: 'map',
@@ -377,16 +381,136 @@ const MAP_HTML = `<!DOCTYPE html>
       }
     }
 
-    function upsertRadarMarker(marker) {
+    function isValidRadarMarker(marker) {
       if (!marker || !marker.id) {
-        return;
+        return false;
       }
 
       var latitude = Number(marker.lat);
       var longitude = Number(marker.lng);
       if (!isFinite(latitude) || !isFinite(longitude)) {
+        return false;
+      }
+      return latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180;
+    }
+
+    function getExpandedRadarBounds() {
+      try {
+        var bounds = map.getBounds();
+        var south = bounds.getSouth();
+        var north = bounds.getNorth();
+        var west = bounds.getWest();
+        var east = bounds.getEast();
+        var latSpan = Math.max(0.001, Math.abs(north - south));
+        var lonSpan = Math.max(0.001, Math.abs(east - west));
+        var latPad = Math.max(0.001, latSpan * RADAR_MARKER_VIEWPORT_PADDING_RATIO);
+        var lonPad = Math.max(0.001, lonSpan * RADAR_MARKER_VIEWPORT_PADDING_RATIO);
+
+        return {
+          south: Math.max(-90, south - latPad),
+          north: Math.min(90, north + latPad),
+          west: west - lonPad,
+          east: east + lonPad,
+        };
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function isLongitudeInsideBounds(longitude, bounds) {
+      if (bounds.west < -180) {
+        return longitude >= bounds.west + 360 || longitude <= bounds.east;
+      }
+      if (bounds.east > 180) {
+        return longitude >= bounds.west || longitude <= bounds.east - 360;
+      }
+      return longitude >= bounds.west && longitude <= bounds.east;
+    }
+
+    function isRadarMarkerInsideBounds(marker, bounds) {
+      if (!bounds) return true;
+      var latitude = Number(marker.lat);
+      var longitude = Number(marker.lng);
+      return (
+        latitude >= bounds.south &&
+        latitude <= bounds.north &&
+        isLongitudeInsideBounds(longitude, bounds)
+      );
+    }
+
+    function isRadarMarkerActive(marker) {
+      return Boolean(marker && marker.active) || Boolean(highlightedRadarId && marker && marker.id === highlightedRadarId);
+    }
+
+    function radarMarkerDistanceScore(marker, center) {
+      if (!center) return 0;
+      var latitude = Number(marker.lat);
+      var longitude = Number(marker.lng);
+      var latDelta = latitude - center.lat;
+      var lonDelta = longitude - center.lng;
+      return latDelta * latDelta + lonDelta * lonDelta;
+    }
+
+    function selectVisibleRadarMarkers() {
+      var bounds = getExpandedRadarBounds();
+      var center = null;
+      try {
+        center = map.getCenter();
+      } catch (error) {
+        center = null;
+      }
+
+      return radarMarkerPayload
+        .filter(function (marker) {
+          return isValidRadarMarker(marker) && isRadarMarkerInsideBounds(marker, bounds);
+        })
+        .sort(function (left, right) {
+          var leftActive = isRadarMarkerActive(left) ? 1 : 0;
+          var rightActive = isRadarMarkerActive(right) ? 1 : 0;
+          if (leftActive !== rightActive) {
+            return rightActive - leftActive;
+          }
+          return radarMarkerDistanceScore(left, center) - radarMarkerDistanceScore(right, center);
+        })
+        .slice(0, RADAR_MARKER_RENDER_CAP);
+    }
+
+    function removeRadarMarker(id) {
+      var record = radarMarkers[id];
+      if (record && record.marker) {
+        record.marker.remove();
+      }
+      delete radarMarkers[id];
+    }
+
+    function reconcileRadarMarkers() {
+      if (!RADAR_MARKERS_ENABLED) {
+        Object.keys(radarMarkers).forEach(function (id) {
+          removeRadarMarker(id);
+        });
         return;
       }
+
+      var nextIds = {};
+      selectVisibleRadarMarkers().forEach(function (marker) {
+        nextIds[marker.id] = true;
+        upsertRadarMarker(marker);
+      });
+
+      Object.keys(radarMarkers).forEach(function (id) {
+        if (!nextIds[id]) {
+          removeRadarMarker(id);
+        }
+      });
+    }
+
+    function upsertRadarMarker(marker) {
+      if (!isValidRadarMarker(marker)) {
+        return;
+      }
+
+      var latitude = Number(marker.lat);
+      var longitude = Number(marker.lng);
 
       var record = radarMarkers[marker.id];
       if (!record) {
@@ -413,50 +537,35 @@ const MAP_HTML = `<!DOCTYPE html>
     }
 
     function setRadarMarkers(payload) {
-      if (!Array.isArray(payload)) {
+      if (!RADAR_MARKERS_ENABLED) {
+        radarMarkerPayload = [];
         clearRadarMarkers();
         return;
       }
 
-      var nextIds = {};
-      payload.forEach(function (marker) {
-        if (!marker || !marker.id) return;
-        nextIds[marker.id] = true;
-        upsertRadarMarker(marker);
-      });
+      if (!Array.isArray(payload)) {
+        radarMarkerPayload = [];
+        clearRadarMarkers();
+        return;
+      }
 
-      Object.keys(radarMarkers).forEach(function (id) {
-        if (nextIds[id]) {
-          return;
-        }
-
-        var record = radarMarkers[id];
-        if (record && record.marker) {
-          record.marker.remove();
-        }
-        delete radarMarkers[id];
+      radarMarkerPayload = payload.filter(function (marker) {
+        return isValidRadarMarker(marker);
       });
+      reconcileRadarMarkers();
     }
 
     function clearRadarMarkers() {
+      radarMarkerPayload = [];
       Object.keys(radarMarkers).forEach(function (id) {
-        var record = radarMarkers[id];
-        if (record && record.marker) {
-          record.marker.remove();
-        }
-        delete radarMarkers[id];
+        removeRadarMarker(id);
       });
       highlightedRadarId = null;
     }
 
     function highlightRadar(payload) {
       highlightedRadarId = payload && payload.id ? payload.id : null;
-
-      Object.keys(radarMarkers).forEach(function (id) {
-        var record = radarMarkers[id];
-        if (!record) return;
-        updateRadarMarkerVisual(record, record.data || {});
-      });
+      reconcileRadarMarkers();
     }
 
     function ensureRouteLayers(geojson) {
@@ -901,6 +1010,7 @@ const MAP_HTML = `<!DOCTYPE html>
     });
 
     map.on('moveend', function () {
+      reconcileRadarMarkers();
       publishCameraState();
     });
 

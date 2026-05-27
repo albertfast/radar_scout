@@ -293,7 +293,7 @@ export function RadarMapTab({
           onMapTouchStart={handleMapTouchStart}
           mapInteractionEnabled={!isMapInputLockActive}
           onMapTap={handleMapTap}
-          showRadarMarkers
+          showRadarMarkers={false}
           onVisibleRegionChange={onVisibleRegionChange}
         />
       </View>

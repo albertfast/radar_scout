@@ -6,5 +6,7 @@
   "ios.useFrameworks": "static",
   "ios.forceStaticLinking": "[]",
   "apple.privacyManifestAggregationEnabled": "true",
-  "ios.buildReactNativeFromSource": "true"
+  "ios.buildReactNativeFromSource": "false",
+  "apple.ccacheEnabled": "true",
+  "expo.inlineModules.watchedDirectories": "[]"
 }

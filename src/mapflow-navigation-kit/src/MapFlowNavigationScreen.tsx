@@ -23,6 +23,8 @@ import { useNavigationStore } from './stores/navigationStore';
 import { RadarMapMarker, SearchResult } from './types/map';
 import { COLORS } from './utils/colors';
 
+const MAPFLOW_RADAR_MARKERS_ENABLED = false;
+
 type MapFlowNavigationScreenProps = {
   radarMarkers?: RadarMapMarker[];
   highlightedRadarId?: string | null;
@@ -213,6 +215,11 @@ export default function MapFlowNavigationScreen({
 
   useEffect(() => {
     if (!mapReady) {
+      return;
+    }
+
+    if (!MAPFLOW_RADAR_MARKERS_ENABLED) {
+      sendToMap({ type: 'clearRadarMarkers' });
       return;
     }
 
