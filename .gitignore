@@ -61,6 +61,7 @@ ios/*.xcworkspace
 ios/*.xcodeproj/project.xcworkspace
 ios/*.xcodeproj/xcuserdata
 credentials.json
+native-ios/Config/NativeLocal.xcconfig
 
 # Build outputs
 *.aab

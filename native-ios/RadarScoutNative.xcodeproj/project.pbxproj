@@ -1,0 +1,602 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000000000000000000001 /* RadarScoutNativeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* RadarScoutNativeApp.swift */; };
+		A10000000000000000000002 /* AppRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* AppRootView.swift */; };
+		A10000000000000000000003 /* NativeConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* NativeConfig.swift */; };
+		A10000000000000000000004 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* AppEnvironment.swift */; };
+		A10000000000000000000005 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000005 /* AppTheme.swift */; };
+		A10000000000000000000006 /* CreativeStudioTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000006 /* CreativeStudioTokens.swift */; };
+		A10000000000000000000007 /* RadarModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* RadarModels.swift */; };
+		A10000000000000000000008 /* TelemetryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* TelemetryService.swift */; };
+		A10000000000000000000009 /* RadarFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000009 /* RadarFeedService.swift */; };
+		A1000000000000000000000A /* AlertEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* AlertEngine.swift */; };
+		A1000000000000000000000B /* LocationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000B /* LocationEngine.swift */; };
+		A1000000000000000000000C /* RouteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000C /* RouteService.swift */; };
+		A1000000000000000000000D /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000D /* AuthService.swift */; };
+		A1000000000000000000000E /* SubscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000E /* SubscriptionService.swift */; };
+		A1000000000000000000000F /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000F /* HomeView.swift */; };
+		A10000000000000000000010 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000010 /* SettingsView.swift */; };
+		A10000000000000000000011 /* AlertBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000011 /* AlertBannerView.swift */; };
+		A10000000000000000000012 /* MapKitDrivingMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* MapKitDrivingMapView.swift */; };
+		A10000000000000000000013 /* DrivingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000013 /* DrivingView.swift */; };
+		A10000000000000000000014 /* RadarModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000014 /* RadarModelTests.swift */; };
+		A10000000000000000000015 /* AlertEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000015 /* AlertEngineTests.swift */; };
+		A10000000000000000000016 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20000000000000000000016 /* MapKit.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A30000000000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A40000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A50000000000000000000001;
+			remoteInfo = RadarScoutNative;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		A20000000000000000000001 /* RadarScoutNativeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarScoutNativeApp.swift; sourceTree = "<group>"; };
+		A20000000000000000000002 /* AppRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRootView.swift; sourceTree = "<group>"; };
+		A20000000000000000000003 /* NativeConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeConfig.swift; sourceTree = "<group>"; };
+		A20000000000000000000004 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		A20000000000000000000005 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		A20000000000000000000006 /* CreativeStudioTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreativeStudioTokens.swift; sourceTree = "<group>"; };
+		A20000000000000000000007 /* RadarModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarModels.swift; sourceTree = "<group>"; };
+		A20000000000000000000008 /* TelemetryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryService.swift; sourceTree = "<group>"; };
+		A20000000000000000000009 /* RadarFeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarFeedService.swift; sourceTree = "<group>"; };
+		A2000000000000000000000A /* AlertEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertEngine.swift; sourceTree = "<group>"; };
+		A2000000000000000000000B /* LocationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationEngine.swift; sourceTree = "<group>"; };
+		A2000000000000000000000C /* RouteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteService.swift; sourceTree = "<group>"; };
+		A2000000000000000000000D /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		A2000000000000000000000E /* SubscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionService.swift; sourceTree = "<group>"; };
+		A2000000000000000000000F /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		A20000000000000000000010 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A20000000000000000000011 /* AlertBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertBannerView.swift; sourceTree = "<group>"; };
+		A20000000000000000000012 /* MapKitDrivingMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitDrivingMapView.swift; sourceTree = "<group>"; };
+		A20000000000000000000013 /* DrivingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrivingView.swift; sourceTree = "<group>"; };
+		A20000000000000000000014 /* RadarModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarModelTests.swift; sourceTree = "<group>"; };
+		A20000000000000000000015 /* AlertEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertEngineTests.swift; sourceTree = "<group>"; };
+		A20000000000000000000016 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		A20000000000000000000017 /* RadarScoutNative.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RadarScoutNative.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000018 /* RadarScoutNativeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RadarScoutNativeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000019 /* NativeLocal.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = NativeLocal.xcconfig; sourceTree = "<group>"; };
+		A2000000000000000000001A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A60000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000016 /* MapKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A60000000000000000000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A70000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A70000000000000000000002 /* RadarScoutNative */,
+				A7000000000000000000000F /* RadarScoutNativeTests */,
+				A70000000000000000000012 /* Config */,
+				A70000000000000000000010 /* Frameworks */,
+				A70000000000000000000011 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A70000000000000000000002 /* RadarScoutNative */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000001 /* RadarScoutNativeApp.swift */,
+				A20000000000000000000002 /* AppRootView.swift */,
+				A2000000000000000000001A /* Info.plist */,
+				A70000000000000000000003 /* Core */,
+				A70000000000000000000008 /* DesignSystem */,
+				A70000000000000000000009 /* Features */,
+			);
+			path = RadarScoutNative;
+			sourceTree = "<group>";
+		};
+		A70000000000000000000003 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000004 /* AppEnvironment.swift */,
+				A70000000000000000000004 /* Config */,
+				A70000000000000000000005 /* Models */,
+				A70000000000000000000006 /* Services */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		A70000000000000000000004 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000003 /* NativeConfig.swift */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		A70000000000000000000005 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000007 /* RadarModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A70000000000000000000006 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000008 /* TelemetryService.swift */,
+				A20000000000000000000009 /* RadarFeedService.swift */,
+				A2000000000000000000000A /* AlertEngine.swift */,
+				A2000000000000000000000B /* LocationEngine.swift */,
+				A2000000000000000000000C /* RouteService.swift */,
+				A2000000000000000000000D /* AuthService.swift */,
+				A2000000000000000000000E /* SubscriptionService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A70000000000000000000008 /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000005 /* AppTheme.swift */,
+				A20000000000000000000006 /* CreativeStudioTokens.swift */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		A70000000000000000000009 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				A7000000000000000000000A /* Driving */,
+				A7000000000000000000000D /* Home */,
+				A7000000000000000000000E /* Settings */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		A7000000000000000000000A /* Driving */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000013 /* DrivingView.swift */,
+				A20000000000000000000012 /* MapKitDrivingMapView.swift */,
+				A20000000000000000000011 /* AlertBannerView.swift */,
+			);
+			path = Driving;
+			sourceTree = "<group>";
+		};
+		A7000000000000000000000D /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000000000000000000F /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		A7000000000000000000000E /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000010 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		A7000000000000000000000F /* RadarScoutNativeTests */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000014 /* RadarModelTests.swift */,
+				A20000000000000000000015 /* AlertEngineTests.swift */,
+			);
+			path = RadarScoutNativeTests;
+			sourceTree = "<group>";
+		};
+		A70000000000000000000010 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000016 /* MapKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A70000000000000000000011 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000017 /* RadarScoutNative.app */,
+				A20000000000000000000018 /* RadarScoutNativeTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A70000000000000000000012 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000019 /* NativeLocal.xcconfig */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A50000000000000000000001 /* RadarScoutNative */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A90000000000000000000003 /* Build configuration list for PBXNativeTarget "RadarScoutNative" */;
+			buildPhases = (
+				A80000000000000000000001 /* Sources */,
+				A60000000000000000000001 /* Frameworks */,
+				A80000000000000000000003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RadarScoutNative;
+			productName = RadarScoutNative;
+			productReference = A20000000000000000000017 /* RadarScoutNative.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A50000000000000000000002 /* RadarScoutNativeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A90000000000000000000004 /* Build configuration list for PBXNativeTarget "RadarScoutNativeTests" */;
+			buildPhases = (
+				A80000000000000000000002 /* Sources */,
+				A60000000000000000000002 /* Frameworks */,
+				A80000000000000000000004 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A30000000000000000000002 /* PBXTargetDependency */,
+			);
+			name = RadarScoutNativeTests;
+			productName = RadarScoutNativeTests;
+			productReference = A20000000000000000000018 /* RadarScoutNativeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A40000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2650;
+				LastUpgradeCheck = 2650;
+				TargetAttributes = {
+					A50000000000000000000001 = {
+						CreatedOnToolsVersion = 26.5;
+					};
+					A50000000000000000000002 = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = A50000000000000000000001;
+					};
+				};
+			};
+			buildConfigurationList = A90000000000000000000001 /* Build configuration list for PBXProject "RadarScoutNative" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A70000000000000000000001;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A70000000000000000000011 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A50000000000000000000001 /* RadarScoutNative */,
+				A50000000000000000000002 /* RadarScoutNativeTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A80000000000000000000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A80000000000000000000004 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A80000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000001 /* RadarScoutNativeApp.swift in Sources */,
+				A10000000000000000000002 /* AppRootView.swift in Sources */,
+				A10000000000000000000003 /* NativeConfig.swift in Sources */,
+				A10000000000000000000004 /* AppEnvironment.swift in Sources */,
+				A10000000000000000000005 /* AppTheme.swift in Sources */,
+				A10000000000000000000006 /* CreativeStudioTokens.swift in Sources */,
+				A10000000000000000000007 /* RadarModels.swift in Sources */,
+				A10000000000000000000008 /* TelemetryService.swift in Sources */,
+				A10000000000000000000009 /* RadarFeedService.swift in Sources */,
+				A1000000000000000000000A /* AlertEngine.swift in Sources */,
+				A1000000000000000000000B /* LocationEngine.swift in Sources */,
+				A1000000000000000000000C /* RouteService.swift in Sources */,
+				A1000000000000000000000D /* AuthService.swift in Sources */,
+				A1000000000000000000000E /* SubscriptionService.swift in Sources */,
+				A1000000000000000000000F /* HomeView.swift in Sources */,
+				A10000000000000000000010 /* SettingsView.swift in Sources */,
+				A10000000000000000000011 /* AlertBannerView.swift in Sources */,
+				A10000000000000000000012 /* MapKitDrivingMapView.swift in Sources */,
+				A10000000000000000000013 /* DrivingView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A80000000000000000000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000014 /* RadarModelTests.swift in Sources */,
+				A10000000000000000000015 /* AlertEngineTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A30000000000000000000002 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A50000000000000000000001 /* RadarScoutNative */;
+			targetProxy = A30000000000000000000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		A90000000000000000000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = targeted;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		A90000000000000000000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = targeted;
+				SWIFT_VERSION = 6.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A90000000000000000000007 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A20000000000000000000019 /* NativeLocal.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = RadarScoutNative/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.radarscout.native;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1";
+			};
+			name = Debug;
+		};
+		A90000000000000000000008 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A20000000000000000000019 /* NativeLocal.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = RadarScoutNative/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.radarscout.native;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1";
+			};
+			name = Release;
+		};
+		A90000000000000000000009 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.radarscout.native.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = "1";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RadarScoutNative.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RadarScoutNative";
+			};
+			name = Debug;
+		};
+		A9000000000000000000000A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.radarscout.native.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = "1";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RadarScoutNative.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RadarScoutNative";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A90000000000000000000001 /* Build configuration list for PBXProject "RadarScoutNative" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A90000000000000000000005 /* Debug */,
+				A90000000000000000000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A90000000000000000000003 /* Build configuration list for PBXNativeTarget "RadarScoutNative" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A90000000000000000000007 /* Debug */,
+				A90000000000000000000008 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A90000000000000000000004 /* Build configuration list for PBXNativeTarget "RadarScoutNativeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A90000000000000000000009 /* Debug */,
+				A9000000000000000000000A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A40000000000000000000001 /* Project object */;
+}

@@ -1,0 +1,7 @@
+// Copy/generate this file as NativeLocal.xcconfig for local native iOS builds.
+// The generated NativeLocal.xcconfig is intentionally gitignored.
+
+SUPABASE_URL =
+SUPABASE_ANON_KEY =
+INFOPLIST_KEY_SUPABASE_URL = $(SUPABASE_URL)
+INFOPLIST_KEY_SUPABASE_ANON_KEY = $(SUPABASE_ANON_KEY)
