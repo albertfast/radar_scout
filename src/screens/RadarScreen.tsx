@@ -171,7 +171,6 @@ const RadarScreen = ({ navigation, route }: any) => {
   const [proSliderIndex, setProSliderIndex] = useState(0);
   const [followHeading, setFollowHeading] = useState(true);
   const [manualPanMode, setManualPanMode] = useState(false);
-  const [reportModalVisible, setReportModalVisible] = useState(false);
   const [currentLocation, setCurrentLocation] = useState<any>(null);
   const currentLocationRef = useRef<any>(currentLocation);
   const manualPanModeRef = useRef(manualPanMode);
@@ -294,11 +293,9 @@ const RadarScreen = ({ navigation, route }: any) => {
   const mapAdEstimatedHeight = suppressMapAds ? 0 : getResponsiveHeight(62);
   const mapControlsBottom = Math.max(mapControlsBottomBase, mapAdBottom + mapAdEstimatedHeight + mapControlGap + getResponsiveHeight(6));
   const fabGap = getResponsiveHeight(12);
-  const floatingFabBottom = isMapNavigationActive
-    ? Math.max(getResponsiveHeight(170), mapControlsBottom - mapControlSize - mapControlGap)
-    : mapAdBottom + mapAdEstimatedHeight + fabGap;
   const hideMapAd = mapInput.isDestinationInputFocused || mapInput.isKeyboardVisible;
   const compassRotation = `${dataSync.resolvedHeading || 0}deg`;
+  const onRadarPress = useCallback(() => {}, []);
   const showCenterRouteAction =
     (manualPanMode || !followHeading) && navigationState.routeCoords.length > 0;
   const routeCoordsForMap = useMemo(
@@ -661,56 +658,6 @@ const RadarScreen = ({ navigation, route }: any) => {
     navigation.getParent?.()?.navigate('Home');
   }, [navigation, navigationState, showTabBar]);
 
-  const onReportRadar = useCallback(async (type: RadarLocation['type'], reportTag: 'default' | 'missed_camera' = 'default') => {
-    setReportModalVisible(false);
-    if (!user) return alert('Please log in to report hazards.');
-    const loc = dataSync.currentLocationRef.current || await LocationService.getCurrentLocation().catch(() => null);
-    if (!loc) return alert('Location unavailable. Please enable location services.');
-    try {
-      await RadarService.reportRadarLocation({
-        latitude: loc.latitude,
-        longitude: loc.longitude,
-        type,
-        confidence: reportTag === 'missed_camera' ? 0.75 : 0.7,
-        lastConfirmed: new Date(),
-        reportedBy: user.id,
-      });
-      const refreshed = await RadarService.getNearbyRadars(loc.latitude, loc.longitude, 10);
-      dataSync.updateNearbyRadarsState(refreshed);
-      await refreshProfile();
-      alert(
-        reportTag === 'missed_camera'
-          ? 'Missed camera feedback sent. We will use it to improve trap coverage.'
-          : 'Report sent. Nearby drivers will be notified.'
-      );
-    } catch {
-      try {
-        await OfflineService.saveRadarLocationOffline({ id: `offline-${Date.now()}`, latitude: loc.latitude, longitude: loc.longitude, type, confidence: 0.7, lastConfirmed: new Date(), reportedBy: user.id, createdAt: new Date(), updatedAt: new Date() } as any);
-        alert(
-          reportTag === 'missed_camera'
-            ? 'Missed camera feedback saved offline. It will sync when online.'
-            : 'Saved offline. Will sync when online.'
-        );
-      } catch {
-        alert('Failed to report hazard. Please try again.');
-      }
-    }
-  }, [dataSync, refreshProfile, user]);
-
-  const onRadarPress = useCallback(async (radar: RadarLocation) => {
-    if (!canConfirmRadar(radar)) return;
-    if (!user) return alert('Please log in to confirm reports.');
-    const loc = dataSync.currentLocationRef.current || dataSync.currentLocation;
-    if (!loc) return alert('Location unavailable. Please enable location services.');
-    const reportId = await SupabaseService.confirmNearbyReport({ latitude: loc.latitude, longitude: loc.longitude, radiusMeters: 150, type: radar.type });
-    if (reportId) {
-      await refreshProfile();
-      alert('Thanks! Confirmation recorded.');
-    } else {
-      alert('No community report to confirm nearby.');
-    }
-  }, [dataSync.currentLocation, dataSync.currentLocationRef, refreshProfile, user]);
-
   if (!locationPermissionGranted) {
     return (
       <LocationPermissionGate
@@ -832,16 +779,11 @@ const RadarScreen = ({ navigation, route }: any) => {
             setSuggestions={navigationState.setSuggestions}
             voiceWarningsEnabled={voiceWarningsEnabled}
             onToggleVoiceWarnings={toggleVoiceWarnings}
-            onOpenIncidentPanel={() => setReportModalVisible(true)}
             currentSpeed={dataSync.currentSpeed}
             unitSystem={unitSystem}
           />
         }
         graphicContent={<RadarGraphicView totalDistance={driving.totalDistance} drivingStartTime={driving.drivingStartTime} currentSpeed={dataSync.currentSpeed} unitSystem={unitSystem} radarRendererMode={radarRendererMode} radarSignalLevel={radarSignalLevel} radarDangerLevel={radarDangerLevel} />}
-        floatingFabBottom={floatingFabBottom}
-        reportModalVisible={reportModalVisible}
-        setReportModalVisible={setReportModalVisible}
-        onReportRadar={onReportRadar}
       />
     );
   }
@@ -882,7 +824,6 @@ const RadarScreen = ({ navigation, route }: any) => {
         await AdService.showInterstitial('start_driving_basic').catch(() => 'failed');
         openDriveNavigation('Basic');
       }}
-      onOpenAlerts={() => navigation.navigate('Alerts')}
       onToggleVoiceWarnings={toggleVoiceWarnings}
       pauseRadarAnimation={false}
     />

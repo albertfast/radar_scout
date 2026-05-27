@@ -84,7 +84,6 @@ type RadarMapTabProps = {
   setSuggestions: (suggestions: AddressSuggestion[]) => void;
   voiceWarningsEnabled: boolean;
   onToggleVoiceWarnings: () => void;
-  onOpenIncidentPanel: () => void;
   currentSpeed: number;
   unitSystem: 'metric' | 'imperial';
 };
@@ -142,7 +141,6 @@ export function RadarMapTab({
   setSuggestions,
   voiceWarningsEnabled,
   onToggleVoiceWarnings,
-  onOpenIncidentPanel,
   currentSpeed,
   unitSystem,
 }: RadarMapTabProps) {
@@ -470,16 +468,6 @@ export function RadarMapTab({
           />
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[
-            styles.mapControlButton,
-            styles.mapIncidentButton,
-            { width: mapControlSize, height: mapControlSize },
-          ]}
-          onPress={onOpenIncidentPanel}
-        >
-          <MaterialCommunityIcons name="alert-plus" size={getResponsiveFontSize(20)} color="#FEF2F2" />
-        </TouchableOpacity>
       </View>
 
       {SPEED_HUD_V2_ENABLED && showCenterRouteAction && routeCoords.length > 0 && (

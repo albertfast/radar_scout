@@ -23,7 +23,7 @@ import { useNavigationStore } from './stores/navigationStore';
 import { RadarMapMarker, SearchResult } from './types/map';
 import { COLORS } from './utils/colors';
 
-const MAPFLOW_RADAR_MARKERS_ENABLED = false;
+const MAPFLOW_RADAR_MARKERS_ENABLED = true;
 
 type MapFlowNavigationScreenProps = {
   radarMarkers?: RadarMapMarker[];

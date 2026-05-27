@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -13,15 +13,14 @@ import {
 import { Text, Surface, ActivityIndicator, IconButton } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { useFocusEffect } from '@react-navigation/native';
 import { useAutoHideTabBar } from '../hooks/use-auto-hide-tab-bar';
 import { TAB_BAR_HEIGHT } from '../constants/layout';
 import { useAuthStore } from '../store/authStore';
-import { hasProAccess, isPremiumAccessPending } from '../utils/access';
-import ProGate from '../components/ProGate';
+import { hasProAccess } from '../utils/access';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AIService, AIModelErrorCode } from '../services/AIService';
-import { AccessBootstrapView } from '../components/AccessBootstrapView';
 import { AdService } from '../services/AdService';
 
 // Suppress specific warnings that might cause crashes
@@ -52,24 +51,21 @@ type DiagnosisOutput = {
 };
 
 const AIDiagnoseScreen = ({ navigation }: any) => {
-  const { user, accessBootstrapState } = useAuthStore();
+  const { user } = useAuthStore();
   const canUse = hasProAccess(user);
-  const accessPending = isPremiumAccessPending(user, accessBootstrapState);
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [diagnosis, setDiagnosis] = useState<DiagnosisOutput | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [loadingStep, setLoadingStep] = useState<string>(''); // 'uploading' | 'scanning' | 'analyzing'
-  const [recording, setRecording] = useState<import('expo-av').Audio.Recording | null>(null);
-  const [isRecording, setIsRecording] = useState(false);
-  const [voiceDescription, setVoiceDescription] = useState<string | null>(null);
   const [modelReady, setModelReady] = useState(false);
   const [modelError, setModelError] = useState<string | null>(null);
   const [modelErrorCode, setModelErrorCode] = useState<AIModelErrorCode | null>(null);
   const [modelDiagnostics, setModelDiagnostics] = useState<any | null>(null);
   const [isModelLoading, setIsModelLoading] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  const [pendingAnalyzeAfterPaywall, setPendingAnalyzeAfterPaywall] = useState(false);
   const { onScroll, onScrollBeginDrag, onScrollEndDrag } = useAutoHideTabBar();
   const isMounted = useRef(true);
   const contentPadding = Math.max(16, Math.min(24, Math.round(width * 0.05)));
@@ -80,19 +76,31 @@ const AIDiagnoseScreen = ({ navigation }: any) => {
   const formatPredictionLine = (item: DiagnosisPrediction) =>
     `${item.label} (${(item.confidence * 100).toFixed(1)}%)`;
 
-  const buildSpeechSummary = (result: DiagnosisOutput) => {
-    const confidencePct = (result.confidence * 100).toFixed(1);
-    return `I've analyzed your dashboard image. Result is ${result.issue} with ${confidencePct} percent confidence.`;
-  };
-
   useEffect(() => {
     return () => {
       isMounted.current = false;
-      if (recording) {
-        recording.stopAndUnloadAsync();
-      }
     };
-  }, [recording]);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!pendingAnalyzeAfterPaywall) {
+        return;
+      }
+
+      if (!canUse) {
+        setPendingAnalyzeAfterPaywall(false);
+        return;
+      }
+
+      if (!selectedImage || !modelReady || isAnalyzing) {
+        return;
+      }
+
+      setPendingAnalyzeAfterPaywall(false);
+      void runAnalysis();
+    }, [canUse, isAnalyzing, modelReady, pendingAnalyzeAfterPaywall, selectedImage])
+  );
 
   useEffect(() => {
     if (!canUse) {
@@ -107,15 +115,6 @@ const AIDiagnoseScreen = ({ navigation }: any) => {
     
     return () => clearTimeout(loadTimeout);
   }, [canUse]);
-
-  if (accessPending) {
-    return (
-      <AccessBootstrapView
-        title="Checking Pro access"
-        subtitle="Restoring AI Diagnose access for your active subscription."
-      />
-    );
-  }
 
   const loadModels = async () => {
     if (!isMounted.current || isModelLoading) return;
@@ -170,52 +169,6 @@ const AIDiagnoseScreen = ({ navigation }: any) => {
     await loadModels();
   };
 
-  const startRecording = async () => {
-    try {
-      const { Audio } = await import('expo-av');
-      const permission = await Audio.requestPermissionsAsync();
-      if (permission.status === 'granted') {
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: true,
-          playsInSilentModeIOS: true,
-        });
-        const { recording } = await Audio.Recording.createAsync(
-          Audio.RecordingOptionsPresets.HIGH_QUALITY
-        );
-        setRecording(recording);
-        setIsRecording(true);
-      }
-    } catch (err) {
-      console.error('Failed to start recording', err);
-      Alert.alert('Error', 'Audio module unavailable. Rebuild the dev client to enable voice recording.');
-    }
-  };
-
-  const stopRecording = async () => {
-    setIsRecording(false);
-    if (!recording) return;
-    await recording.stopAndUnloadAsync();
-    const uri = recording.getURI();
-    setRecording(null);
-    
-    // In a real app, we'd send this to a Whisper API or similar
-    // For this "Wow" demo, we'll simulate transcription
-    setVoiceDescription("Simulated transcription: 'My engine is making a clicking sound when I accelerate.'");
-  };
-
-  const speakDiagnosis = async (text: string) => {
-    try {
-      const Speech = await import('expo-speech');
-      Speech.speak(text, {
-        language: 'en',
-        pitch: 1.0,
-        rate: 0.9,
-      });
-    } catch (error) {
-      console.warn('Speech module unavailable:', error);
-    }
-  };
-
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     
@@ -257,7 +210,7 @@ const AIDiagnoseScreen = ({ navigation }: any) => {
     }
   };
 
-  const analyzeImage = async () => {
+  const runAnalysis = async () => {
     if (!selectedImage) return;
 
     setIsAnalyzing(true);
@@ -312,7 +265,6 @@ const AIDiagnoseScreen = ({ navigation }: any) => {
       setModelReady(true);
       
       setDiagnosis(result);
-      speakDiagnosis(buildSpeechSummary(result));
     } catch (error) {
       console.error('Analysis error:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -343,15 +295,20 @@ const AIDiagnoseScreen = ({ navigation }: any) => {
     }
   };
 
-  if (!canUse) {
-    return (
-      <ProGate
-        title="AI Diagnostics"
-        subtitle="Watch the ad-supported preview, then upgrade to Pro to run the on-device dashboard-light model. The model scans your photo locally, compares warning-light patterns, and returns confidence plus repair guidance."
-        onUpgrade={() => navigation.navigate('Home', { screen: 'Subscription' })}
-      />
-    );
-  }
+  const analyzeImage = async () => {
+    if (!selectedImage) {
+      return;
+    }
+
+    if (!canUse) {
+      setPendingAnalyzeAfterPaywall(true);
+      await AdService.showInterstitial('ai_diagnose').catch(() => {});
+      navigation.navigate('Subscription');
+      return;
+    }
+
+    await runAnalysis();
+  };
 
   return (
     <ErrorBoundary>
@@ -362,10 +319,14 @@ const AIDiagnoseScreen = ({ navigation }: any) => {
           <MaterialCommunityIcons name="chevron-left" size={iconSize} color="white" />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, { fontSize: headerTitleSize }]}>AI Car Diagnose</Text>
-        <IconButton 
-          icon="volume-high" 
-          iconColor="white" 
-          onPress={() => diagnosis && speakDiagnosis(buildSpeechSummary(diagnosis))}
+        <IconButton
+          icon="volume-high"
+          iconColor="white"
+          onPress={() => {
+            if (!diagnosis) return;
+            const confidencePct = (diagnosis.confidence * 100).toFixed(1);
+            Alert.alert('AI Diagnosis', `${diagnosis.issue}\n${confidencePct}% confidence`);
+          }}
           disabled={!diagnosis}
         />
       </View>
@@ -420,27 +381,6 @@ const AIDiagnoseScreen = ({ navigation }: any) => {
             </TouchableOpacity>
           </Surface>
         )}
-
-        {/* Voice Recording Section */}
-        <Surface style={styles.voiceContainer} elevation={2}>
-          <TouchableOpacity 
-            style={[styles.micButton, isRecording && styles.micButtonActive]} 
-            onPressIn={startRecording}
-            onPressOut={stopRecording}
-          >
-            <MaterialCommunityIcons 
-              name={isRecording ? "microphone" : "microphone-outline"} 
-              size={40} 
-              color="white" 
-            />
-          </TouchableOpacity>
-          <Text style={styles.voiceHint}>
-            {isRecording ? "Listening..." : "Hold to describe the issue"}
-          </Text>
-          {voiceDescription && (
-            <Text style={styles.transcriptionText}>{voiceDescription}</Text>
-          )}
-        </Surface>
 
         {/* Image Selection Buttons */}
         <View style={styles.buttonRow}>
@@ -556,11 +496,6 @@ const styles = StyleSheet.create({
   subtitle: { color: '#8E8E93', fontSize: 16, textAlign: 'center', marginBottom: 20 },
   modelStatus: { textAlign: 'center', fontSize: 13, fontWeight: '600' },
   modelDebugText: { color: '#94A3B8', fontSize: 12, marginTop: 6, textAlign: 'center' },
-  voiceContainer: { backgroundColor: '#1C1C1E', borderRadius: 20, padding: 20, alignItems: 'center', marginBottom: 30, borderWidth: 1, borderColor: '#333' },
-  micButton: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#2196F3', justifyContent: 'center', alignItems: 'center', marginBottom: 10, elevation: 5 },
-  micButtonActive: { backgroundColor: '#FF5252', transform: [{ scale: 1.1 }] },
-  voiceHint: { color: '#8E8E93', fontSize: 14, fontWeight: '600' },
-  transcriptionText: { color: '#2196F3', fontSize: 14, fontStyle: 'italic', marginTop: 15, textAlign: 'center' },
   buttonRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30 },
   actionButton: { flex: 1, backgroundColor: '#1C1C1E', borderRadius: 16, padding: 20, alignItems: 'center', marginHorizontal: 5, borderWidth: 1, borderColor: '#333', minHeight: 100, justifyContent: 'center' },
   actionButtonText: { color: 'white', marginTop: 10, fontWeight: '600' },

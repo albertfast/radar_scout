@@ -17,8 +17,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown, FadeInUp, SlideInRight } from 'react-native-reanimated';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuthStore } from '../store/authStore';
-import { useSettingsStore } from '../store/settingsStore';
-import { ANIMATION_TIMING, STAGGER_DELAYS } from '../utils/animationConstants';
+import { ANIMATION_TIMING } from '../utils/animationConstants';
 import { HapticPatterns } from '../utils/hapticFeedback';
 import { SupabaseService } from '../services/SupabaseService';
 import { ProfileMediaService } from '../services/ProfileMediaService';
@@ -26,23 +25,8 @@ import { TAB_BAR_HEIGHT } from '../constants/layout';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { appVersion } from '../utils/buildInfo';
 import {
-  APP_PRIVACY_POLICY_URL,
   APP_STANDARD_EULA_URL,
-  APP_TERMS_URL,
 } from '../config/appIdentity';
-
-const StatBadge = ({ icon, value, label, color = '#4ECDC4', delay = 0 }: any) => (
-  <Animated.View
-    entering={FadeInDown.delay(delay).duration(ANIMATION_TIMING.BASE)}
-    style={styles.statItem}
-  >
-    <View style={[styles.statIconBox, { backgroundColor: `${color}20` }]}>
-      <MaterialCommunityIcons name={icon} size={24} color={color} />
-    </View>
-    <Text style={styles.statNumber}>{value}</Text>
-    <Text style={styles.statLabel}>{label}</Text>
-  </Animated.View>
-);
 
 const MenuButton = ({ icon, label, subLabel, onPress, color = 'white', delay = 0 }: any) => (
   <Animated.View
@@ -78,7 +62,6 @@ const MenuButton = ({ icon, label, subLabel, onPress, color = 'white', delay = 0
 
 const ProfileScreen = ({ navigation }: any) => {
   const { user, logout, updateUser, normalizeAccessState, refreshProfile } = useAuthStore();
-  const { unitSystem } = useSettingsStore();
   const insets = useSafeAreaInsets();
   const tabBarInset = TAB_BAR_HEIGHT + Math.max(insets.bottom, 10) + 16;
 
@@ -381,14 +364,6 @@ const ProfileScreen = ({ navigation }: any) => {
               {user?.username || user?.name || 'Rookie Driver'}
             </Animated.Text>
             
-            <Animated.View
-              style={styles.levelBadge}
-              entering={FadeInDown.delay(150).duration(ANIMATION_TIMING.BASE)}
-            >
-                <MaterialCommunityIcons name="shield-star" size={16} color="#FFD700" />
-                <Text style={styles.levelText}>Level {user?.level || 1} • {user?.rank || 'Novice'}</Text>
-            </Animated.View>
-
             {user?.isAdminSession ? (
               <Animated.View
                 style={styles.adminBadge}
@@ -399,12 +374,12 @@ const ProfileScreen = ({ navigation }: any) => {
               </Animated.View>
             ) : null}
 
-            {/* Username / leaderboard handle */}
+            {/* Username / profile handle */}
             <Animated.View
               entering={FadeInDown.delay(180).duration(ANIMATION_TIMING.BASE)}
               style={styles.usernameCard}
             >
-              <Text style={styles.usernameLabel}>Username for leaderboard</Text>
+              <Text style={styles.usernameLabel}>Username</Text>
               <View style={styles.usernameRow}>
                   <TextInput
                     style={styles.usernameInput}
@@ -420,51 +395,6 @@ const ProfileScreen = ({ navigation }: any) => {
               </View>
             </Animated.View>
 
-            {/* XP Bar using Gradients */}
-            <Animated.View
-              style={styles.xpWrapper}
-              entering={FadeInDown.delay(200).duration(ANIMATION_TIMING.BASE)}
-            >
-                 <Text style={styles.xpLabel}>{user?.points || 0} XP</Text>
-                 <View style={styles.xpTrack}>
-                    <LinearGradient 
-                        colors={['#4ECDC4', '#2196F3']} 
-                        start={{x:0, y:0}} end={{x:1, y:0}}
-                        style={[styles.xpFill, { width: `${Math.min(((user?.xp || 0) % 100), 100)}%` }]} 
-                    />
-                 </View>
-                 <Text style={styles.xpLabel}>Next Lvl</Text>
-            </Animated.View>
-        </Animated.View>
-
-        {/* Stats Grid */}
-        <Animated.View
-          style={styles.statsGrid}
-          entering={FadeInDown.delay(250).duration(ANIMATION_TIMING.BASE)}
-        >
-            <StatBadge 
-                icon="map-marker-distance" 
-                value={(unitSystem === 'metric' 
-                    ? (user?.stats?.distanceDriven || 0).toLocaleString() 
-                    : ((user?.stats?.distanceDriven || 0) * 0.621371).toFixed(1))} 
-                label={unitSystem === 'metric' ? "km Driven" : "mi Driven"} 
-                color="#4ECDC4"
-                delay={0}
-            />
-            <StatBadge 
-              icon="bullhorn-outline" 
-              value={user?.stats?.reports || 0} 
-              label="Reports" 
-              color="#FFD700"
-              delay={STAGGER_DELAYS.ITEM_FAST}
-            />
-            <StatBadge 
-              icon="check-decagram" 
-              value={user?.stats?.confirmations || 0} 
-              label="Helped" 
-              color="#A855F7"
-              delay={STAGGER_DELAYS.ITEM_FAST * 2}
-            />
         </Animated.View>
 
         {/* Garage Section */}
@@ -536,7 +466,7 @@ const ProfileScreen = ({ navigation }: any) => {
         </Surface>
 
         {/* Menu Grid */}
-        <Text style={styles.sectionHeader}>DASHBOARD</Text>
+        <Text style={styles.sectionHeader}>ACCOUNT</Text>
         <View style={styles.menuGrid}>
              {user?.isAdminSession && (
                <MenuButton
@@ -547,26 +477,12 @@ const ProfileScreen = ({ navigation }: any) => {
                   onPress={handleExitAdminMode}
                />
              )}
-             <MenuButton 
-                icon="trophy" 
-                label="Leaderboard" 
-                subLabel="Compare with others"
-                color="#FFD700"
-                onPress={() => navigation.navigate('Leaderboard')} 
-             />
-             <MenuButton 
-                icon="cog" 
-                label="Settings" 
-                subLabel="Preferences & Legal"
-                color="#94A3B8"
-                onPress={() => navigation.navigate('Settings')}
-             />
         </View>
         
         <TouchableOpacity
           style={styles.legalLink}
           onPress={() => {
-            void openExternalLink(APP_TERMS_URL);
+            navigation.navigate('Terms');
           }}
           accessibilityLabel="Terms and Conditions"
           accessibilityRole="link"
@@ -576,7 +492,7 @@ const ProfileScreen = ({ navigation }: any) => {
         <TouchableOpacity
           style={styles.legalLink}
           onPress={() => {
-            void openExternalLink(APP_PRIVACY_POLICY_URL);
+            navigation.navigate('Privacy');
           }}
           accessibilityLabel="Privacy Policy"
           accessibilityRole="link"

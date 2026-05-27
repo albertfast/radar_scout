@@ -19,9 +19,7 @@ import { useUiStore } from '../store/uiStore';
 import { RadarAlert, RadarLocation } from '../types';
 import { AdService } from '../services/AdService';
 import { LocationService } from '../services/LocationService';
-import { OfflineService } from '../services/OfflineService';
 import { RadarService } from '../services/RadarService';
-import { SupabaseService } from '../services/SupabaseService';
 import { hasProAccess } from '../utils/access';
 import { TAB_BAR_HEIGHT } from '../constants/layout';
 import { RadarGraphicView } from './components/RadarGraphicView';
@@ -33,6 +31,7 @@ import { useRadarSignalLevels } from './radar/hooks/useRadarSignalLevels';
 import { useVoiceMode } from './radar/hooks/useVoiceMode';
 import { TabType } from './radar/types';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import type { RadarMapMarker } from '../mapflow-navigation-kit/src/types/map';
 
 const NOOP_SET_ACTIVE_TAB = () => {};
 const RADAR_DRIVE_NAV_KEEP_AWAKE_TAG = 'radar_drive_navigation';
@@ -108,6 +107,32 @@ const buildRadarListSignature = (radars: Array<RadarLocation & { distance: numbe
         .join('|')
     : 'empty';
 
+const MAPFLOW_RADAR_TYPES = new Set<RadarLocation['type']>(['fixed', 'red_light', 'speed_camera']);
+
+const toMapFlowRadarMarkers = (
+  radars: Array<RadarLocation & { distance: number }>,
+  activeRadarId: string | null
+): RadarMapMarker[] => {
+  const markers = radars
+    .filter((radar) =>
+      MAPFLOW_RADAR_TYPES.has(radar.type) &&
+      Number.isFinite(radar.latitude) &&
+      Number.isFinite(radar.longitude)
+    )
+    .map((radar) => ({
+      id: radar.id,
+      lat: radar.latitude,
+      lng: radar.longitude,
+      type: radar.type,
+      markerKind: radar.markerKind || (radar.type === 'red_light' ? 'red_light' : 'camera'),
+      speedLimit: Number.isFinite(radar.speedLimit) ? radar.speedLimit : null,
+      active: radar.id === activeRadarId,
+    }))
+    .sort((left, right) => Number(right.active) - Number(left.active));
+
+  return markers;
+};
+
 function DriveTabFallback({
   title,
   body,
@@ -159,7 +184,6 @@ export default function RadarDriveNavigationScreen({ navigation, route }: any) {
 
   const [nearbyRadars, setNearbyRadars] = useState<Array<RadarLocation & { distance: number }>>([]);
   const [routeRadars, setRouteRadars] = useState<Array<RadarLocation & { distance: number }>>([]);
-  const [reportModalVisible, setReportModalVisible] = useState(false);
   const [mapUnavailableReason, setMapUnavailableReason] = useState<string | null>(null);
   const requestedInitialTab = resolveInitialTab(route?.params?.initialTab);
   const [activeTab, setActiveTab] = useState<TabType>(requestedInitialTab);
@@ -446,110 +470,14 @@ export default function RadarDriveNavigationScreen({ navigation, route }: any) {
     const unacknowledged = safeAlerts.filter((alert) => !alert.acknowledged);
     return unacknowledged.sort((left, right) => left.distance - right.distance)[0] || null;
   }, [activeAlerts]);
+  const mapFlowRadarMarkers = useMemo(
+    () => toMapFlowRadarMarkers(displayRadars, activeAlert?.radarId || null),
+    [activeAlert?.radarId, displayRadars]
+  );
   const { signalLevel: radarSignalLevel, dangerLevel: radarDangerLevel } = useRadarSignalLevels(
     displayRadars,
     displayRadars[0] || null
   );
-
-  const handleReportRadar = useCallback(
-    async (
-      type: RadarLocation['type'],
-      reportTag: 'default' | 'missed_camera' = 'default'
-    ) => {
-      setReportModalVisible(false);
-      if (!user) {
-        Alert.alert('Login required', 'Please log in to report hazards.');
-        return;
-      }
-
-      const liveLocation =
-        currentLocationRef.current ||
-        (await LocationService.getCurrentLocation().catch(() => null));
-      if (!liveLocation) {
-        Alert.alert('Location unavailable', 'Please enable location services and try again.');
-        return;
-      }
-
-      try {
-        await RadarService.reportRadarLocation({
-          latitude: liveLocation.latitude,
-          longitude: liveLocation.longitude,
-          type,
-          confidence: reportTag === 'missed_camera' ? 0.75 : 0.7,
-          lastConfirmed: new Date(),
-          reportedBy: user.id,
-        });
-
-        if (hasRoute) {
-          await refreshRouteRadars();
-        } else {
-          await refreshNearbyRadars();
-        }
-        await refreshProfile();
-
-        Alert.alert(
-          'Thanks',
-          reportTag === 'missed_camera'
-            ? 'Missed camera feedback was sent.'
-            : 'Report sent. Nearby drivers will be notified.'
-        );
-      } catch {
-        try {
-          await OfflineService.saveRadarLocationOffline({
-            id: `offline-${Date.now()}`,
-            latitude: liveLocation.latitude,
-            longitude: liveLocation.longitude,
-            type,
-            confidence: 0.7,
-            lastConfirmed: new Date(),
-            reportedBy: user.id,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          } as RadarLocation);
-
-          Alert.alert(
-            'Saved offline',
-            reportTag === 'missed_camera'
-              ? 'Missed camera feedback will sync when you are online.'
-              : 'Your report will sync when you are online.'
-          );
-        } catch {
-          Alert.alert('Report failed', 'Please try again.');
-        }
-      }
-    },
-    [hasRoute, refreshNearbyRadars, refreshProfile, refreshRouteRadars, user]
-  );
-
-  const handleConfirmAlert = useCallback(async () => {
-    if (!activeAlert || !user) {
-      if (!user) {
-        Alert.alert('Login required', 'Please log in to confirm reports.');
-      }
-      return;
-    }
-
-    const liveLocation = currentLocationRef.current || currentLocation;
-    if (!liveLocation) {
-      Alert.alert('Location unavailable', 'Please enable location services and try again.');
-      return;
-    }
-
-    const reportId = await SupabaseService.confirmNearbyReport({
-      latitude: liveLocation.latitude,
-      longitude: liveLocation.longitude,
-      radiusMeters: 150,
-      type: activeAlert.type,
-    });
-
-    if (!reportId) {
-      Alert.alert('Nothing to confirm', 'No nearby community report was found.');
-      return;
-    }
-
-    await refreshProfile();
-    Alert.alert('Thanks', 'Confirmation recorded.');
-  }, [activeAlert, currentLocation, refreshProfile, user]);
 
   const handleExitDrive = useCallback(async () => {
     stopNavigation();
@@ -666,6 +594,7 @@ export default function RadarDriveNavigationScreen({ navigation, route }: any) {
           >
             <MapFlowNavigationScreen
               highlightedRadarId={activeAlert?.radarId || null}
+                radarMarkers={mapFlowRadarMarkers}
               onMapUnavailable={(reason) => {
                 setMapUnavailableReason((current) => current || reason);
               }}
@@ -692,10 +621,6 @@ export default function RadarDriveNavigationScreen({ navigation, route }: any) {
             />
           </ErrorBoundary>
         }
-        floatingFabBottom={insets.bottom + 112}
-        reportModalVisible={reportModalVisible}
-        setReportModalVisible={setReportModalVisible}
-        onReportRadar={handleReportRadar}
       />
     </View>
   );

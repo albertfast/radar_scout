@@ -49,7 +49,6 @@ type RadarHomeDashboardProps = {
   onNavigateSubscription: () => void;
   onToggleDrivingMode: () => void;
   onOpenDriveBasic: () => void;
-  onOpenAlerts: () => void;
   onToggleVoiceWarnings: () => void;
   pauseRadarAnimation: boolean;
 };
@@ -146,7 +145,6 @@ export function RadarHomeDashboard({
   onNavigateSubscription,
   onToggleDrivingMode,
   onOpenDriveBasic,
-  onOpenAlerts,
   onToggleVoiceWarnings,
   pauseRadarAnimation,
 }: RadarHomeDashboardProps) {
@@ -356,14 +354,6 @@ export function RadarHomeDashboard({
               >
                 <MaterialCommunityIcons name="radar" size={18} color="#4ECDC4" />
                 <Text style={styles.homeQuickButtonText}>Drive Basic</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.homeQuickButton}
-                onPress={onOpenAlerts}
-                activeOpacity={0.86}
-              >
-                <MaterialCommunityIcons name="bell-alert-outline" size={18} color="#38BDF8" />
-                <Text style={styles.homeQuickButtonText}>Alerts</Text>
               </TouchableOpacity>
             </View>
 

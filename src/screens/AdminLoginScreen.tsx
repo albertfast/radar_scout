@@ -6,8 +6,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuthStore } from '../store/authStore';
 import type { User } from '../types';
 
-const ADMIN_USERNAME = 'albertfast';
-const ADMIN_PASSWORD = 'abc123';
+const ADMIN_USERNAME = (process.env.EXPO_PUBLIC_ADMIN_USERNAME || 'albertfast').trim();
+const ADMIN_PASSWORD = (process.env.EXPO_PUBLIC_ADMIN_PASSWORD || 'abc123').trim();
 
 const buildLocalAdminUser = (): User => {
   const now = new Date();
@@ -69,12 +69,12 @@ const AdminLoginScreen = ({ navigation }: any) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { user, updateUser, signInAnonymously } = useAuthStore();
+  const { signInAnonymously } = useAuthStore();
 
   const handleLogin = async () => {
     // Removed __DEV__ check to allow production admin access
 
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    if (username.trim() === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
       let usedLocalFallback = false;
 
       if (!useAuthStore.getState().user) {

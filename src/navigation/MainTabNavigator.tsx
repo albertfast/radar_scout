@@ -10,18 +10,14 @@ import * as Haptics from 'expo-haptics';
 import RadarNavigator from './RadarNavigator';
 import ProfileNavigator from './ProfileNavigator';
 import AIDiagnoseScreen from '../screens/AIDiagnoseScreen';
-import LeaderboardScreen from '../screens/LeaderboardScreen';
-import PermitTestScreen from '../screens/PermitTestScreen';
 import DriveShortcutScreen from '../screens/DriveShortcutScreen';
 import { useUiStore } from '../store/uiStore';
 import { TAB_BAR_HEIGHT } from '../constants/layout';
 
 export type MainTabParamList = {
   Home: { forceTab?: string } | undefined;
-  Permit: undefined;
   Drive: undefined;
   Diagnose: undefined;
-  Leaderboard: undefined;
   Profile: undefined;
 };
 
@@ -29,10 +25,8 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const TAB_ICONS: Record<keyof MainTabParamList, any> = {
   Home: 'home-variant',
-  Permit: 'book-open-variant',
   Drive: 'radar',
   Diagnose: 'car-wrench',
-  Leaderboard: 'trophy-outline',
   Profile: 'account-circle',
 };
 
@@ -189,12 +183,6 @@ const MainTabNavigator = () => {
       />
 
       <Tab.Screen
-        name="Permit"
-        component={PermitTestScreen}
-        options={{ lazy: true }}
-      />
-
-      <Tab.Screen
         name="Drive"
         component={DriveShortcutScreen}
         options={{ lazy: true }}
@@ -203,12 +191,6 @@ const MainTabNavigator = () => {
       <Tab.Screen
         name="Diagnose"
         component={AIDiagnoseScreen}
-        options={{ lazy: true }}
-      />
-
-      <Tab.Screen
-        name="Leaderboard"
-        component={LeaderboardScreen}
         options={{ lazy: true }}
       />
 

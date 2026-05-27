@@ -5,13 +5,7 @@ import RadarScreen from '../screens/RadarScreen';
 import RadarSettingsScreen from '../screens/RadarSettingsScreen';
 import AIDiagnoseScreen from '../screens/AIDiagnoseScreen';
 import SubscriptionScreen from '../screens/SubscriptionScreen';
-import PermitTestScreen from '../screens/PermitTestScreen';
-import HistoryScreen from '../screens/HistoryScreen';
-import TripDetailScreen from '../screens/TripDetailScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-import LeaderboardScreen from '../screens/LeaderboardScreen';
-import ComponentsShowcaseScreen from '../screens/ComponentsShowcaseScreen';
-import AlertsScreen from '../screens/AlertsScreen';
 import MapScreen from '../screens/MapScreen';
 import AdminLoginScreen from '../screens/AdminLoginScreen';
 import RadarDriveNavigationScreen from '../screens/RadarDriveNavigationScreen';
@@ -23,18 +17,12 @@ const STACK_ROUTE_NAMES = new Set([
   'RadarMain',
   'RadarSettings',
   'AIDiagnose',
-  'PermitTest',
-  'History',
-  'TripDetail',
   'Profile',
-  'Leaderboard',
   'Settings',
-  'Alerts',
   'RadarDriveNavigation',
   'MapLegacy',
   'AdminLogin',
   'Subscription',
-  'ComponentsShowcase',
 ]);
 
 const extractRouteParams = (value: any) => {
@@ -266,36 +254,15 @@ const RadarNavigator = ({ route, navigation }: any) => {
       />
       <Stack.Screen name="RadarSettings" component={RadarSettingsScreen} />
       <Stack.Screen name="AIDiagnose" component={AIDiagnoseScreen} />
-      <Stack.Screen name="PermitTest" component={PermitTestScreen} />
-      <Stack.Screen
-        name="History"
-        component={HistoryScreen}
-        initialParams={stackRequest.routeName === 'History' ? stackRequest.params : undefined}
-      />
-      <Stack.Screen
-        name="TripDetail"
-        component={TripDetailScreen}
-        initialParams={stackRequest.routeName === 'TripDetail' ? stackRequest.params : undefined}
-      />
       <Stack.Screen
         name="Profile"
         component={ProfileScreen}
         initialParams={stackRequest.routeName === 'Profile' ? stackRequest.params : undefined}
       />
       <Stack.Screen
-        name="Leaderboard"
-        component={LeaderboardScreen}
-        initialParams={stackRequest.routeName === 'Leaderboard' ? stackRequest.params : undefined}
-      />
-      <Stack.Screen
         name="Settings"
         component={RadarSettingsScreen}
         initialParams={stackRequest.routeName === 'Settings' ? stackRequest.params : undefined}
-      />
-      <Stack.Screen
-        name="Alerts"
-        component={AlertsScreen}
-        initialParams={stackRequest.routeName === 'Alerts' ? stackRequest.params : undefined}
       />
       <Stack.Screen
         name="RadarDriveNavigation"
@@ -317,11 +284,6 @@ const RadarNavigator = ({ route, navigation }: any) => {
         component={SubscriptionScreen} 
         initialParams={stackRequest.routeName === 'Subscription' ? stackRequest.params : undefined}
         options={{ presentation: 'modal', headerShown: false }}
-      />
-      <Stack.Screen
-        name="ComponentsShowcase"
-        component={ComponentsShowcaseScreen}
-        initialParams={stackRequest.routeName === 'ComponentsShowcase' ? stackRequest.params : undefined}
       />
     </Stack.Navigator>
   );

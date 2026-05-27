@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import React, { useRef } from 'react';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Text, IconButton } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAutoHideTabBar } from '../hooks/use-auto-hide-tab-bar';
@@ -11,8 +11,30 @@ import {
   APP_SUPPORT_EMAIL,
 } from '../config/appIdentity';
 
+const ADMIN_UNLOCK_TAP_COUNT = 7;
+const ADMIN_UNLOCK_WINDOW_MS = 2200;
+const PRIVACY_LAST_UPDATED = 'April 2026';
+
 const PrivacyScreen = ({ navigation }: any) => {
   const { onScroll, onScrollBeginDrag, onScrollEndDrag } = useAutoHideTabBar();
+  const adminTapCountRef = useRef(0);
+  const lastAdminTapAtRef = useRef(0);
+
+  const handleLastUpdatedPress = () => {
+    const now = Date.now();
+    if (now - lastAdminTapAtRef.current > ADMIN_UNLOCK_WINDOW_MS) {
+      adminTapCountRef.current = 0;
+    }
+
+    lastAdminTapAtRef.current = now;
+    adminTapCountRef.current += 1;
+
+    if (adminTapCountRef.current >= ADMIN_UNLOCK_TAP_COUNT) {
+      adminTapCountRef.current = 0;
+      navigation.navigate('AdminLogin');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <LinearGradient colors={['#000000', '#121212']} style={styles.background} />
@@ -73,6 +95,15 @@ const PrivacyScreen = ({ navigation }: any) => {
           <Text style={styles.bold}>10. Contact</Text>{"\n"}
           {APP_DEVELOPER_NAME} — {APP_SUPPORT_EMAIL}
         </Text>
+
+        <TouchableOpacity
+          onPress={handleLastUpdatedPress}
+          style={styles.lastUpdated}
+          accessibilityLabel={`Last updated ${PRIVACY_LAST_UPDATED}`}
+          accessibilityRole="button"
+        >
+          <Text style={styles.lastUpdatedText}>Last updated: {PRIVACY_LAST_UPDATED}</Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -86,6 +117,17 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: 20, paddingBottom: 40 },
   text: { color: '#CCCCCC', fontSize: 16, lineHeight: 24 },
   bold: { fontWeight: 'bold', color: 'white' },
+  lastUpdated: {
+    marginTop: 22,
+    alignSelf: 'flex-start',
+    paddingVertical: 8,
+    paddingRight: 12,
+  },
+  lastUpdatedText: {
+    color: '#64748B',
+    fontSize: 13,
+    fontWeight: '600',
+  },
 });
 
 export default PrivacyScreen;

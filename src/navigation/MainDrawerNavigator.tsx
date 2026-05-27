@@ -32,18 +32,14 @@ const CustomDrawerContent = (props: any) => {
       params: { initialTab: 'Map' },
     },
     { icon: 'car-cog', label: 'AI Diagnosis', screen: 'Diagnose', color: '#4ECDC4' },
-    { icon: 'book-open-variant', label: 'Permit Test', screen: 'Permit', color: '#96CEB4' },
-    { icon: 'trophy-outline', label: 'Leaderboard', screen: 'Leaderboard', color: '#FFD700' },
   ];
 
   const secondaryItems = [
-    { icon: 'history', label: 'History', screen: 'History' },
-    { icon: 'bell-alert-outline', label: 'Alerts', screen: 'Alerts' },
     { icon: 'cog-outline', label: 'Settings', screen: 'Settings' },
   ];
 
   const handleNavigate = async (screen: string, params?: any) => {
-    const tabScreens = new Set(['Home', 'Permit', 'Drive', 'Diagnose', 'Leaderboard', 'Profile']);
+    const tabScreens = new Set(['Home', 'Drive', 'Diagnose', 'Profile']);
 
     if (tabScreens.has(screen)) {
       props.navigation.navigate('MainTabs', { screen, params });
@@ -135,7 +131,7 @@ const CustomDrawerContent = (props: any) => {
                     </View>
                     <View style={styles.upgradeCopy}>
                         <Text style={styles.upgradeTitle}>Unlock PRO</Text>
-                        <Text style={styles.upgradeSubtitle}>3D radar, AI, permit tests, no ads</Text>
+                        <Text style={styles.upgradeSubtitle}>AI results, cleaner driving, no ads</Text>
                     </View>
                     <MaterialCommunityIcons name="chevron-right" size={22} color="#CBD5E1" />
                 </LinearGradient>

@@ -23,7 +23,6 @@ import {
 } from '@expo/vector-icons';
 
 import MainDrawerNavigator from './src/navigation/MainDrawerNavigator';
-import ReportRadarScreen from './src/screens/ReportRadarScreen';
 import AdminLoginScreen from './src/screens/AdminLoginScreen';
 import { useAuthStore } from './src/store/authStore';
 import { darkTheme } from './src/utils/theme';
@@ -419,18 +418,6 @@ export default function App() {
                   {isAuthenticated ? (
                     <>
                       <Stack.Screen name="Main" component={MainDrawerNavigator} />
-                      <Stack.Screen
-                        name="ReportRadar"
-                        component={ReportRadarScreen}
-                        options={{
-                          headerShown: true,
-                          title: 'Report Radar',
-                          headerStyle: {
-                            backgroundColor: combinedDarkTheme.colors.surface,
-                          },
-                          headerTintColor: combinedDarkTheme.colors.text,
-                        }}
-                      />
                       <Stack.Screen
                         name="AdminLogin"
                         component={AdminLoginScreen}
