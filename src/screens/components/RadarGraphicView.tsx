@@ -12,9 +12,6 @@ import { DatabaseService } from '../../services/DatabaseService';
 import { useRadarStore } from '../../store/radarStore';
 import { useAutoHideTabBar } from '../../hooks/use-auto-hide-tab-bar';
 import { TAB_BAR_HEIGHT } from '../../constants/layout';
-import { hasProAccess, isPremiumAccessPending } from '../../utils/access';
-import ProGate from '../../components/ProGate';
-import { AccessBootstrapView } from '../../components/AccessBootstrapView';
 import { RadarAnimation, type RadarRendererMode } from '../../components/RadarAnimation';
 import GraphicRadarPanelView from '../../components/GraphicRadarPanelView';
 
@@ -49,9 +46,7 @@ export const RadarGraphicView: React.FC<RadarGraphicViewProps> = ({
   radarDangerLevel,
 }) => {
   const { width } = useWindowDimensions();
-  const { user, accessBootstrapState } = useAuthStore();
-  const canUse = hasProAccess(user);
-  const accessPending = isPremiumAccessPending(user, accessBootstrapState);
+  const { user } = useAuthStore();
   const activeAlerts = useRadarStore((state) => state.activeAlerts);
   const { onScroll, onScrollBeginDrag, onScrollEndDrag } = useAutoHideTabBar();
   const [tripHistory, setTripHistory] = useState<any[]>([]);
@@ -66,10 +61,8 @@ export const RadarGraphicView: React.FC<RadarGraphicViewProps> = ({
 
   // Load real data from Supabase
   useEffect(() => {
-    if (canUse) {
-      loadDrivingData();
-    }
-  }, [canUse, user?.id]);
+    loadDrivingData();
+  }, [user?.id]);
 
   useEffect(() => {
     if (drivingStartTime) {
@@ -268,9 +261,8 @@ export const RadarGraphicView: React.FC<RadarGraphicViewProps> = ({
     unitSystem === 'imperial' ? Math.round(speedKph * 0.621371) : Math.round(speedKph);
 
   useEffect(() => {
-    if (!canUse) return;
     loadRecentActivity();
-  }, [user?.id, activeAlerts.length, canUse]);
+  }, [user?.id, activeAlerts.length]);
 
   const weeklyStats = {
     totalDistance: weeklyData.reduce((acc, d) => acc + d.distance, 0),
@@ -370,24 +362,6 @@ export const RadarGraphicView: React.FC<RadarGraphicViewProps> = ({
   const displaySafetyScore = tripMetrics.averageScore
     ? `${(tripMetrics.averageScore / 10).toFixed(1)}/10`
     : '—';
-
-  if (accessPending) {
-    return (
-      <AccessBootstrapView
-        title="Checking Pro access"
-        subtitle="Restoring graphs and trip analytics for your subscription."
-      />
-    );
-  }
-
-  if (!canUse) {
-    return (
-      <ProGate
-        title="Graphic Dashboard"
-        subtitle="Upgrade to Pro to unlock weekly stats and activity insights."
-      />
-    );
-  }
 
   return (
     <ScrollView

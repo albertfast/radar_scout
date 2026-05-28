@@ -28,6 +28,21 @@ import {
   APP_STANDARD_EULA_URL,
 } from '../config/appIdentity';
 
+const GUEST_PROFILE = {
+  id: 'guest',
+  name: 'Guest Driver',
+  username: 'guest',
+  email: '',
+  points: 0,
+  rank: 'Rookie' as const,
+  xp: 0,
+  level: 1,
+  stats: { reports: 0, confirmations: 0, distanceDriven: 0 },
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  subscriptionType: 'free' as const,
+} as any;
+
 const MenuButton = ({ icon, label, subLabel, onPress, color = 'white', delay = 0 }: any) => (
   <Animated.View
     entering={FadeInUp.delay(delay).duration(ANIMATION_TIMING.BASE)}
@@ -65,7 +80,7 @@ const ProfileScreen = ({ navigation }: any) => {
   const insets = useSafeAreaInsets();
   const tabBarInset = TAB_BAR_HEIGHT + Math.max(insets.bottom, 10) + 16;
 
-  if (!user) return null;
+  const profileUser = user || GUEST_PROFILE;
 
   const handleLogout = async () => {
     // Ensure admin overrides are cleared when the user signs out.
@@ -89,7 +104,7 @@ const ProfileScreen = ({ navigation }: any) => {
     Alert.alert('Admin mode disabled', 'The app returned to your normal account permissions.');
   };
   const [isEditing, setIsEditing] = useState(false);
-  const [username, setUsername] = useState(user?.username || user?.name || '');
+  const [username, setUsername] = useState(profileUser.username || profileUser.name || '');
   const [uploadingMediaType, setUploadingMediaType] = useState<'profile' | 'car' | null>(null);
   const [resolvedProfileImage, setResolvedProfileImage] = useState<string | null>(null);
   const [resolvedCarImage, setResolvedCarImage] = useState<string | null>(null);
@@ -99,10 +114,25 @@ const ProfileScreen = ({ navigation }: any) => {
   });
   
   // Local state for editing
-  const [carBrand, setCarBrand] = useState(user?.carDetails?.brand || '');
-  const [carModel, setCarModel] = useState(user?.carDetails?.model || '');
-  const [carYear, setCarYear] = useState(user?.carDetails?.year || '');
-  const [carKm, setCarKm] = useState(user?.carDetails?.km || '');
+  const [carBrand, setCarBrand] = useState(profileUser.carDetails?.brand || '');
+  const [carModel, setCarModel] = useState(profileUser.carDetails?.model || '');
+  const [carYear, setCarYear] = useState(profileUser.carDetails?.year || '');
+  const [carKm, setCarKm] = useState(profileUser.carDetails?.km || '');
+
+  useEffect(() => {
+    setUsername(profileUser.username || profileUser.name || '');
+    setCarBrand(profileUser.carDetails?.brand || '');
+    setCarModel(profileUser.carDetails?.model || '');
+    setCarYear(profileUser.carDetails?.year || '');
+    setCarKm(profileUser.carDetails?.km || '');
+  }, [
+    profileUser.carDetails?.brand,
+    profileUser.carDetails?.km,
+    profileUser.carDetails?.model,
+    profileUser.carDetails?.year,
+    profileUser.name,
+    profileUser.username,
+  ]);
 
   const handleSave = () => {
     updateUser({
@@ -113,19 +143,19 @@ const ProfileScreen = ({ navigation }: any) => {
 
   const resolveProfileMedia = useCallback(async () => {
     const nextProfileImage = await ProfileMediaService.resolveDisplayUri({
-      userId: user?.id,
+      userId: profileUser.id,
       type: 'profile',
-      primaryUri: user?.profileImage || user?.avatarUrl || null,
+      primaryUri: profileUser.profileImage || profileUser.avatarUrl || null,
     });
     const nextCarImage = await ProfileMediaService.resolveDisplayUri({
-      userId: user?.id,
+      userId: profileUser.id,
       type: 'car',
-      primaryUri: user?.carImage || null,
+      primaryUri: profileUser.carImage || null,
     });
 
     setResolvedProfileImage((current) => (current === nextProfileImage ? current : nextProfileImage));
     setResolvedCarImage((current) => (current === nextCarImage ? current : nextCarImage));
-  }, [user?.avatarUrl, user?.carImage, user?.id, user?.profileImage]);
+  }, [profileUser.avatarUrl, profileUser.carImage, profileUser.id, profileUser.profileImage]);
 
   useEffect(() => {
     mediaRefreshAttemptedRef.current = {
@@ -138,11 +168,11 @@ const ProfileScreen = ({ navigation }: any) => {
   const handleMediaRenderError = useCallback(
     (type: 'profile' | 'car') => {
       const primaryUri =
-        type === 'profile' ? user?.profileImage || user?.avatarUrl || null : user?.carImage || null;
+        type === 'profile' ? profileUser.profileImage || profileUser.avatarUrl || null : profileUser.carImage || null;
 
       void (async () => {
         const fallbackUri = await ProfileMediaService.resolveDisplayUri({
-          userId: user?.id,
+          userId: profileUser.id,
           type,
           primaryUri,
           preferLocal: true,
@@ -158,13 +188,13 @@ const ProfileScreen = ({ navigation }: any) => {
           setResolvedCarImage(safeFallback);
         }
 
-        if (user?.id && !mediaRefreshAttemptedRef.current[type]) {
+        if (profileUser.id !== 'guest' && !mediaRefreshAttemptedRef.current[type]) {
           mediaRefreshAttemptedRef.current[type] = true;
           await refreshProfile().catch(() => {});
         }
       })();
     },
-    [refreshProfile, user?.avatarUrl, user?.carImage, user?.id, user?.profileImage]
+    [refreshProfile, profileUser.avatarUrl, profileUser.carImage, profileUser.id, profileUser.profileImage]
   );
 
   const pickImage = async (type: 'profile' | 'car') => {
@@ -178,7 +208,7 @@ const ProfileScreen = ({ navigation }: any) => {
     if (result.canceled || !result.assets?.[0]?.uri) return;
 
     const sourceUri = result.assets[0].uri;
-    if (!user?.id) {
+    if (!profileUser.id || profileUser.id === 'guest') {
       updateUser(
         type === 'profile'
           ? { avatarUrl: sourceUri, profileImage: sourceUri }
@@ -190,14 +220,14 @@ const ProfileScreen = ({ navigation }: any) => {
     setUploadingMediaType(type);
     try {
       const media = await ProfileMediaService.saveMedia({
-        userId: user.id,
+        userId: profileUser.id,
         type,
         sourceUri,
       });
       const persistedUri = media.remoteUrl || media.localUri;
 
       const updatedProfile = await SupabaseService.updateProfile(
-        user.id,
+        profileUser.id,
         type === 'profile'
           ? { avatar_url: persistedUri }
           : { car_image_url: persistedUri }
@@ -228,23 +258,23 @@ const ProfileScreen = ({ navigation }: any) => {
       return;
     }
 
-    const currentUsername = (user?.username || user?.name || '').trim();
+    const currentUsername = (profileUser.username || profileUser.name || '').trim();
     if (clean.toLowerCase() === currentUsername.toLowerCase()) {
       return;
     }
 
-    if (!user?.id) {
+    if (!profileUser.id || profileUser.id === 'guest') {
       updateUser({ username: clean, name: clean, displayName: clean });
       return;
     }
 
-    const available = await SupabaseService.isUsernameAvailable(clean, user.id);
+    const available = await SupabaseService.isUsernameAvailable(clean, profileUser.id);
     if (available === false) {
       Alert.alert('Username unavailable', 'This username is already in use. Please choose another one.');
       return;
     }
 
-    const updated = await SupabaseService.updateProfile(user.id, {
+    const updated = await SupabaseService.updateProfile(profileUser.id, {
       username: clean,
       display_name: clean,
     });
@@ -254,7 +284,7 @@ const ProfileScreen = ({ navigation }: any) => {
       return;
     }
 
-    const availableAfterFail = await SupabaseService.isUsernameAvailable(clean, user.id);
+    const availableAfterFail = await SupabaseService.isUsernameAvailable(clean, profileUser.id);
     if (availableAfterFail === false) {
       Alert.alert('Username unavailable', 'This username was just taken. Please choose another one.');
     } else {
@@ -343,7 +373,7 @@ const ProfileScreen = ({ navigation }: any) => {
                    />
                  ) : (
                     <View style={[styles.avatarImage, { backgroundColor: '#1E293B', justifyContent: 'center', alignItems: 'center' }]}>
-                        <Text style={{color: 'white', fontSize: 30, fontWeight: 'bold'}}>{(user?.name?.substring(0, 2) || 'US').toUpperCase()}</Text>
+                        <Text style={{color: 'white', fontSize: 30, fontWeight: 'bold'}}>{(profileUser.name?.substring(0, 2) || 'US').toUpperCase()}</Text>
                     </View>
                  )}
               </LinearGradient>
@@ -361,10 +391,10 @@ const ProfileScreen = ({ navigation }: any) => {
               style={styles.userName}
               entering={FadeInDown.delay(100).duration(ANIMATION_TIMING.BASE)}
             >
-              {user?.username || user?.name || 'Rookie Driver'}
+              {profileUser.username || profileUser.name || 'Rookie Driver'}
             </Animated.Text>
             
-            {user?.isAdminSession ? (
+            {profileUser?.isAdminSession ? (
               <Animated.View
                 style={styles.adminBadge}
                 entering={FadeInDown.delay(165).duration(ANIMATION_TIMING.BASE)}
@@ -468,7 +498,7 @@ const ProfileScreen = ({ navigation }: any) => {
         {/* Menu Grid */}
         <Text style={styles.sectionHeader}>ACCOUNT</Text>
         <View style={styles.menuGrid}>
-             {user?.isAdminSession && (
+             {profileUser?.isAdminSession && (
                <MenuButton
                   icon="shield-off"
                   label="Exit Admin Mode"

@@ -103,10 +103,7 @@ const AIDiagnoseScreen = ({ navigation }: any) => {
   );
 
   useEffect(() => {
-    if (!canUse) {
       AdService.showInterstitial('ai_diagnose_entry').catch(() => {});
-      return;
-    }
     
     // iOS için gecikmeli model yükleme
     const loadTimeout = setTimeout(() => {
